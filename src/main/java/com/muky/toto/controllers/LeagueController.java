@@ -28,4 +28,10 @@ public class LeagueController implements LeagueApi {
         List<TeamScoreEntry> israelLeagueTable = leagueService.getIsraelPremierLeagueScoreBoard();
         return ResponseEntity.ok(israelLeagueTable);
     }
+
+    @Override
+    public ResponseEntity<List<TeamScoreEntry>> getIsraelNationalLeagueScoreBoard() throws IOException {
+        List<TeamScoreEntry> israelLeagueTable = leagueService.getIsraelNationalLeagueScoreBoard();
+        return ResponseEntity.ok(israelLeagueTable);
+    }
 }

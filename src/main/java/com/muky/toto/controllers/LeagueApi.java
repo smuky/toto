@@ -37,4 +37,15 @@ public interface LeagueApi {
     })
     @GetMapping("/israel")
     ResponseEntity<List<TeamScoreEntry>> getIsraelPremierLeagueScoreBoard() throws IOException;
+
+    @Operation(
+            summary = "Get Israel National League scoreboard",
+            description = "Retrieves the current Israel National League table from Israel Football Association"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved Israel National League table"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/israel-national")
+    ResponseEntity<List<TeamScoreEntry>> getIsraelNationalLeagueScoreBoard() throws IOException;
 }
