@@ -12,6 +12,7 @@ app:
       season_id: 27
       leagues:
         - type: NATIONAL_LEAGUE
+          name: לאומית
           league_id: 45
           team:
             '1003': מכבי הרצליה
@@ -19,6 +20,7 @@ app:
             '2186': הפועל חדרה
             '2252': הפועל כפר שלם
         - type: WINNER
+          name: winner
           league_id: 40
           team:
             '2171': הפועל באר שבע

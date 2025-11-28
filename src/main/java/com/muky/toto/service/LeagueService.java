@@ -71,11 +71,6 @@ public class LeagueService {
         return israelFootballAssociationClient.getLigaScoreBoard(leagueId, seasonId);
     }
 
-    public String getLeagueId(LeagueType type) {
-        LeagueConfig league = israelLeagueConfig.getLeagueByType(type);
-        return league != null ? String.valueOf(league.getLeagueId()) : null;
-    }
-
     public List<TeamGamesEntry> getTeamGames(String name) throws IOException {
         String teamId = teamNameToIdMap.get(name);
         return iFAteamGamesclient.getGameList(teamId, seasonId);

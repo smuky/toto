@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class LeagueConfig {
     private LeagueType type;
+    private String name;
     private Integer leagueId;
     private Map<String, String> team;
 
@@ -15,6 +16,14 @@ public class LeagueConfig {
 
     public void setType(LeagueType type) {
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getLeagueId() {
