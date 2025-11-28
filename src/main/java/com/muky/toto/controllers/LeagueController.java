@@ -1,5 +1,7 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import com.muky.toto.service.LeagueService;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +20,8 @@ public class LeagueController implements LeagueApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamScoreEntry>> getLeague() throws IOException {
-        List<TeamScoreEntry> leagueTable = leagueService.getLeagueInformation();
+    public ResponseEntity<List<TeamScoreEntry>> getEnglandPremierLeague() throws IOException {
+        List<TeamScoreEntry> leagueTable = leagueService.getEnglandPremierLeague();
         return ResponseEntity.ok(leagueTable);
     }
 
@@ -30,8 +32,16 @@ public class LeagueController implements LeagueApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamScoreEntry>> getIsraelNationalLeagueScoreBoard() throws IOException {
-        List<TeamScoreEntry> israelLeagueTable = leagueService.getIsraelNationalLeagueScoreBoard();
+    public ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(LeagueType leagueType) throws IOException {
+        List<TeamScoreEntry> israelLeagueTable = leagueService.getIsraelLeagueScoreBoard(leagueType);
         return ResponseEntity.ok(israelLeagueTable);
     }
+
+    @Override
+    public ResponseEntity<List<TeamGamesEntry>> getTeamGames(String name) throws IOException {
+        List<TeamGamesEntry> teamGames = leagueService.getTeamGames(name);
+        return ResponseEntity.ok(teamGames);
+    }
+
+
 }

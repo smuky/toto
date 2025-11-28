@@ -1,5 +1,7 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,15 +20,15 @@ import java.util.List;
 public interface LeagueApi {
 
     @Operation(
-            summary = "Get Premier League table",
+            summary = "Get England Premier League table",
             description = "Retrieves the current Premier League table from BBC Sport"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved Premier League table"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping
-    ResponseEntity<List<TeamScoreEntry>> getLeague() throws IOException;
+    @GetMapping("/england-premier-league")
+    ResponseEntity<List<TeamScoreEntry>> getEnglandPremierLeague() throws IOException;
 
     @Operation(
             summary = "Get Israel Premier League scoreboard",
@@ -35,17 +38,29 @@ public interface LeagueApi {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved Israel Premier League table"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/israel")
+    @GetMapping("/israel-premier")
     ResponseEntity<List<TeamScoreEntry>> getIsraelPremierLeagueScoreBoard() throws IOException;
 
     @Operation(
-            summary = "Get Israel National League scoreboard",
-            description = "Retrieves the current Israel National League table from Israel Football Association"
+            summary = "Get Israel league scoreboard by type",
+            description = "Retrieves the current Israel league table from Israel Football Association. Supports NATIONAL_LEAGUE and WINNER league types."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved Israel National League table"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved Israel league table"),
+            @ApiResponse(responseCode = "400", description = "Invalid league type"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/israel-national")
-    ResponseEntity<List<TeamScoreEntry>> getIsraelNationalLeagueScoreBoard() throws IOException;
+    @GetMapping("/israel")
+    ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(@RequestParam LeagueType leagueType) throws IOException;
+
+    @Operation(
+            summary = "Get team games",
+            description = "Retrieves the list of games for a specific team by name"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved team games"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/team")
+    ResponseEntity<List<TeamGamesEntry>> getTeamGames(@RequestParam String name) throws IOException;
 }

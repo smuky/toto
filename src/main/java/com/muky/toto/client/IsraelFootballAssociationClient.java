@@ -1,6 +1,7 @@
 package com.muky.toto.client;
 
 import com.muky.toto.model.TeamScoreEntry;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,6 +9,7 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,33 +17,25 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
-public class IsraelFootballAssociationClient {
+public class IsraelFootballAssociationClient extends IFAClientBase {
 
-    private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
+    private static final String IFA_URL = "https://www.football.org.il/leagues/league/";
+    //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
-    public List<TeamScoreEntry> getNationalLeague() throws IOException {
+    @Cacheable(value = "league-table", key = "#leagueId + '-' + #seasonId")
+    public List<TeamScoreEntry> getLigaScoreBoard(String leagueId, String seasonId) throws IOException {
+        log.info("🔍 Cache MISS - Fetching league data for leagueId: " + leagueId + ", seasonId: " + seasonId);
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
-        WebDriver driver = null;
+        WebDriver driver = getWebDriver(options);
 
         try {
-            // Configure Chrome options for headless mode
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless=new"); // Run in headless mode
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--window-size=1920,1080");
-            options.addArguments("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-            options.addArguments("--lang=he-IL");
-
-            // Initialize Chrome driver
-            driver = new ChromeDriver(options);
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
             // Navigate to the page
-            driver.get(NATIONAL_LEAGUE_URL);
+            String url = IFA_URL + "?league_id=" + leagueId + "&season_id=" + seasonId;
+            log.info("getLigaScoreBoard URL: {}", url);
+            driver.get(url);
 
             // Wait a bit for JavaScript to load
             Thread.sleep(3000);
@@ -111,7 +105,7 @@ public class IsraelFootballAssociationClient {
                     tableEntries.add(entry);
                 } catch (Exception e) {
                     // Log and continue with next row if parsing fails
-                    System.err.println("Error parsing table row: " + e.getMessage());
+                    log.error("Error parsing table row: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -139,5 +133,13 @@ public class IsraelFootballAssociationClient {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    private WebDriver getWebDriver(ChromeOptions options) {
+        // Initialize Chrome driver
+        WebDriver driver = new ChromeDriver(options);
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        return driver;
     }
 }
