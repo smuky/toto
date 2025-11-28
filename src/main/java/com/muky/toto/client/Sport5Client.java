@@ -15,6 +15,7 @@ import java.util.List;
 public class Sport5Client {
 
     private static final String SPORT5_LEAGUE_TABLE_URL = "https://www.sport5.co.il/Pages/LeagueTable.aspx?FolderID=44";
+    private static final String SPORT5_LEAGUE_TABLE_URL = "https://www.sport5.co.il/liga.aspx?FolderID=80";
 
     public List<TeamScoreEntry> getLeagueTable() throws IOException {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();

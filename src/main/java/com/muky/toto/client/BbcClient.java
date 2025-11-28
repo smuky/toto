@@ -16,7 +16,11 @@ public class BbcClient {
 
     private static final String BBC_BASE_URL = "https://www.bbc.com";
     private static final String PREMIER_LEAGUE_TABLE_URL = "https://www.bbc.com/sport/football/tables#PremierLeague";
-
+    private static final String SPANISH_LA_LIGA_TABLE_URL = "https://www.bbc.com/sport/football/spanish-la-liga";
+    private static final String ITALIAN_SERIE_A_TABLE_URL = "https://www.bbc.com/sport/football/italian-serie-a/table";
+    private static final String GERMAN_BUNDESLIGA_TABLE_URL = "https://www.bbc.com/sport/football/german-bundesliga";
+    private static final String FRENCH_LIGUE_1_TABLE_URL = "https://www.bbc.com/sport/football/french-ligue-1";
+    private static final String ENGLISH_LEAGUE_TABLE_URL = "https://www.bbc.com/sport/football/league-table";
     public List<TeamScoreEntry> getPremierLeagueTable() throws IOException {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
 
