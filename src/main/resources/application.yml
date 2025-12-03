@@ -4,6 +4,9 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-3-small
 
 
 app:
@@ -25,7 +28,7 @@ app:
           team:
             '2171': הפועל באר שבע
             '1061': מכבי תל אביב
-            '3595': ביתר ירושליים
+            '3595': ביתר ירושלים
             '1068': מכבי נתניה
             '2176': הפועל תל אביב
             '1198': מעודון ספורט אשדוד
