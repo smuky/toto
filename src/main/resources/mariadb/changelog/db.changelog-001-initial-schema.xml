@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-predictions-history-table" author="muky">
+        <createTable tableName="predictions_history">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="home_team" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="away_team" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="final_prediction" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minimize_prediction" type="VARCHAR(255)"/>
+            <column name="reasoning" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_event_date" tableName="predictions_history">
+            <column name="event_date"/>
+        </createIndex>
+
+        <createIndex indexName="idx_home_away_teams" tableName="predictions_history">
+            <column name="home_team"/>
+            <column name="away_team"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
