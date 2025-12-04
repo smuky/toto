@@ -30,10 +30,12 @@ public class OpenAiServiceImpl implements OpenAiService {
     private Resource europeLeagueTemplate;
 
     public Answer getEuropeLeagueAnswer(String homeTeam, String awayTeam) {
+        String language = "hebrew";
         PromptTemplate promptTemplate = new PromptTemplate(europeLeagueTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
                 "homeTeam", homeTeam,
-                "awayTeam", awayTeam
+                "awayTeam", awayTeam,
+                "language", language
         ));
 
         log.info("Prompt: {}", prompt);
