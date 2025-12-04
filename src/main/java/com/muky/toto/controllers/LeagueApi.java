@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.LeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
@@ -20,19 +21,22 @@ import java.util.List;
 public interface LeagueApi {
 
     @Operation(
-            summary = "Get England Premier League table",
-            description = "Retrieves the current Premier League table from BBC Sport"
+            summary = "Get European league scoreboard by type",
+            description = "Retrieves the current European league table from BBC Sport. Supports PREMIER_LEAGUE, SPANISH_LA_LIGA, ITALIAN_SERIE_A, and GERMAN_BUNDESLIGA league types."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved Premier League table"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved European league table"),
+            @ApiResponse(responseCode = "400", description = "Invalid league type"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/england-premier-league")
-    ResponseEntity<List<TeamScoreEntry>> getEnglandPremierLeague() throws IOException;
+    @GetMapping("/europe")
+    ResponseEntity<List<TeamScoreEntry>> getEuropeLeagueScoreBoard(@RequestParam EuropeLeagueType leagueType) throws IOException;
 
+    @Deprecated
     @Operation(
             summary = "Get Israel Premier League scoreboard",
-            description = "Retrieves the current Israel Premier League table from Sport5"
+            description = "Deprecated: Use /israel endpoint instead. This endpoint retrieves the current Israel Premier League table from Sport5",
+            deprecated = true
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved Israel Premier League table"),

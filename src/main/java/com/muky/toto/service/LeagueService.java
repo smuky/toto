@@ -6,6 +6,7 @@ import com.muky.toto.client.IsraelFootballAssociationClient;
 import com.muky.toto.client.Sport5Client;
 import com.muky.toto.config.IsraelLeagueConfig;
 import com.muky.toto.config.LeagueConfig;
+import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.LeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
@@ -57,8 +58,8 @@ public class LeagueService {
         return map;
     }
 
-    public List<TeamScoreEntry> getEnglandPremierLeague() throws IOException {
-        return bbcClient.getPremierLeagueTable();
+    public List<TeamScoreEntry> getEuropeLeagueScoreBoard(EuropeLeagueType leagueType) throws IOException {
+        return bbcClient.getLeagueScoreBoard(leagueType);
     }
 
     public List<TeamScoreEntry> getIsraelPremierLeagueScoreBoard() throws IOException {

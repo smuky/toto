@@ -1,5 +1,6 @@
 package com.muky.toto.client;
 
+import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.TeamScoreEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,18 +15,13 @@ import java.util.List;
 @Component
 public class BbcClient {
 
-    private static final String BBC_BASE_URL = "https://www.bbc.com";
-    private static final String PREMIER_LEAGUE_TABLE_URL = "https://www.bbc.com/sport/football/tables#PremierLeague";
-    private static final String SPANISH_LA_LIGA_TABLE_URL = "https://www.bbc.com/sport/football/spanish-la-liga";
-    private static final String ITALIAN_SERIE_A_TABLE_URL = "https://www.bbc.com/sport/football/italian-serie-a/table";
-    private static final String GERMAN_BUNDESLIGA_TABLE_URL = "https://www.bbc.com/sport/football/german-bundesliga";
-    private static final String FRENCH_LIGUE_1_TABLE_URL = "https://www.bbc.com/sport/football/french-ligue-1";
-    private static final String ENGLISH_LEAGUE_TABLE_URL = "https://www.bbc.com/sport/football/league-table";
-    public List<TeamScoreEntry> getPremierLeagueTable() throws IOException {
+    private static final String BBC_BASE_URL = "https://www.bbc.com/sport/football/";
+    public List<TeamScoreEntry> getLeagueScoreBoard(EuropeLeagueType leagueType) throws IOException {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
 
+        String url = buildUrl(leagueType);
         // Fetch the page
-        Document doc = Jsoup.connect(PREMIER_LEAGUE_TABLE_URL)
+        Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .timeout(10000)
                 .get();
@@ -88,6 +84,10 @@ public class BbcClient {
         }
 
         return tableEntries;
+    }
+
+    private String buildUrl(EuropeLeagueType leagueType) {
+        return BBC_BASE_URL + leagueType.getBBCClientSuffix();
     }
 
     private String extractTeamName(Element row) {

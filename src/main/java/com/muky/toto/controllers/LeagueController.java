@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.LeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
@@ -20,8 +21,8 @@ public class LeagueController implements LeagueApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamScoreEntry>> getEnglandPremierLeague() throws IOException {
-        List<TeamScoreEntry> leagueTable = leagueService.getEnglandPremierLeague();
+    public ResponseEntity<List<TeamScoreEntry>> getEuropeLeagueScoreBoard(EuropeLeagueType leagueType) throws IOException {
+        List<TeamScoreEntry> leagueTable = leagueService.getEuropeLeagueScoreBoard(leagueType);
         return ResponseEntity.ok(leagueTable);
     }
 
