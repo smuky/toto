@@ -10,4 +10,6 @@ public interface OpenAiService {
     Answer getAnswer(String leagueName, String homeTeam, String awayTeam,
                      String extraInput, List<TeamScoreEntry> scoreBoard,
                      List<TeamGamesEntry> homeTeamGames, List<TeamGamesEntry> awayTeamGames);
+
+    Answer getEuropeLeagueAnswer(String homeTeam, String awayTeam);
 }

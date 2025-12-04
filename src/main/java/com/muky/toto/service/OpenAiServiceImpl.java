@@ -26,6 +26,23 @@ public class OpenAiServiceImpl implements OpenAiService {
     @Value("classpath:/templates/israelNationalLeaguePromptMain.st")
     private Resource ragPromptTemplate;
 
+    @Value("classpath:/templates/EuropeLeaguePredictorPrompt.st")
+    private Resource europeLeagueTemplate;
+
+    public Answer getEuropeLeagueAnswer(String homeTeam, String awayTeam) {
+        PromptTemplate promptTemplate = new PromptTemplate(europeLeagueTemplate);
+        Prompt prompt = promptTemplate.create(Map.of(
+                "homeTeam", homeTeam,
+                "awayTeam", awayTeam
+        ));
+
+        log.info("Prompt: {}", prompt);
+        ChatResponse response = chatModel.call(prompt);
+
+        return new Answer(response.getResult().getOutput().getText());
+
+
+    }
     @Override
     public Answer getAnswer(String leagueName, String homeTeam, String awayTeam,
                             String extraInput, List<TeamScoreEntry> scoreBoard,
@@ -60,8 +77,5 @@ public class OpenAiServiceImpl implements OpenAiService {
         ChatResponse response = chatModel.call(prompt);
 
         return new Answer(response.getResult().getOutput().getText());
-        
-        // Get response from ChatModel
-        //return chatModel.call(prompt).getResult().getOutput().getContent();
     }
 }
