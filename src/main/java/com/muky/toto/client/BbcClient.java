@@ -2,6 +2,7 @@ package com.muky.toto.client;
 
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.TeamScoreEntry;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class BbcClient {
 
     private static final String BBC_BASE_URL = "https://www.bbc.com/sport/football/";
@@ -33,8 +35,11 @@ public class BbcClient {
         }
         
         // Get the first table (Premier League) and its rows
-        Element premierLeagueTable = tables.first();
-        Elements tableRows = premierLeagueTable.select("tbody tr");
+        Element leagueTable = tables.first();
+        if (leagueTable == null) {
+            throw new IOException("No tables found on the page");
+        }
+        Elements tableRows = leagueTable.select("tbody tr");
 
         for (Element row : tableRows) {
             try {
@@ -78,8 +83,7 @@ public class BbcClient {
                 }
             } catch (Exception e) {
                 // Log and continue with next row if parsing fails
-                System.err.println("Error parsing table row: " + e.getMessage());
-                e.printStackTrace();
+                log.error("Error parsing table row: ", e);
             }
         }
 
@@ -129,7 +133,7 @@ public class BbcClient {
         
         for (String word : words) {
             if (word.length() == 1 && (word.equals("W") || word.equals("L") || word.equals("D"))) {
-                if (normalized.length() > 0) {
+                if (!normalized.isEmpty()) {
                     normalized.append(' ');
                 }
                 normalized.append(word);
