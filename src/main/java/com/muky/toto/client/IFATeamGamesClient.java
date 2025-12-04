@@ -101,8 +101,7 @@ public class IFATeamGamesClient extends IFAClientBase {
 
                     gameEntries.add(entry);
                 } catch (Exception e) {
-                    log.error("Error parsing game row: " + e.getMessage());
-                    e.printStackTrace();
+                    log.error("Error parsing game row: ", e);
                 }
             }
 
