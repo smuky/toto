@@ -10,13 +10,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +22,13 @@ import java.util.List;
 public class IsraelFootballAssociationClient extends IFAClientBase {
 
     private final IsraelLeagueConfig israelLeagueConfig;
+    private final WebDriverPool webDriverPool;
 
     private static final String IFA_URL = "https://www.football.org.il/leagues/league/";
 
-    public IsraelFootballAssociationClient(IsraelLeagueConfig israelLeagueConfig) {
+    public IsraelFootballAssociationClient(IsraelLeagueConfig israelLeagueConfig, WebDriverPool webDriverPool) {
         this.israelLeagueConfig = israelLeagueConfig;
+        this.webDriverPool = webDriverPool;
     }
     //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
@@ -40,10 +39,9 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         String leagueId = getLeagueId(leagueType);
 
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
-        WebDriver driver = getWebDriver(options);
+        WebDriver driver = webDriverPool.getDriver();
 
         try {
-
             // Navigate to the page
             String url = IFA_URL + "?league_id=" + leagueId + "&season_id=" + seasonId;
             log.info("getLigaScoreBoard URL: {}", url);
@@ -128,10 +126,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         } catch (Exception e) {
             throw new IOException("Error fetching league table with Selenium: " + e.getMessage(), e);
         } finally {
-            // Always close the browser
-            if (driver != null) {
-                driver.quit();
-            }
+            webDriverPool.releaseDriver();
         }
 
         return tableEntries;
@@ -151,13 +146,5 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         } catch (NumberFormatException e) {
             return 0;
         }
-    }
-
-    private WebDriver getWebDriver(ChromeOptions options) {
-        // Initialize Chrome driver
-        WebDriver driver = new ChromeDriver(options);
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        return driver;
     }
 }
