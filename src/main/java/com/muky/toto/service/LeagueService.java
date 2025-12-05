@@ -10,7 +10,6 @@ import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,8 @@ public class LeagueService {
     private final IFATeamGamesClient iFAteamGamesclient;
     private final Map<String, String> teamNameToIdMap;
     private final String seasonId;
-    private List<TeamScoreEntry> allTeams;
+    private volatile List<TeamScoreEntry> allTeamsCache;
+    private volatile boolean isInitializing = false;
 
     public LeagueService(BbcClient bbcClient, Sport5Client sport5Client, 
                         IsraelFootballAssociationClient israelFootballAssociationClient,
@@ -46,17 +46,33 @@ public class LeagueService {
         
         // Initialize team name to ID map from national league configuration
         this.teamNameToIdMap = populateTeamNameToIdMap(israelLeagueConfig);
-        log.info("Start Initialize Europe Leagues");
-
-    }
-
-    @PostConstruct
-    public void init() {
-        allTeams = initAllTeams();
+        log.info("LeagueService initialized - data will be loaded on first request");
     }
 
     public List<TeamScoreEntry> getAllTeams() {
-        return allTeams;
+        if (allTeamsCache != null) {
+            return allTeamsCache;
+        }
+        
+        synchronized (this) {
+            if (allTeamsCache != null) {
+                return allTeamsCache;
+            }
+            
+            if (isInitializing) {
+                log.warn("getAllTeams called while initialization is in progress");
+                return new ArrayList<>();
+            }
+            
+            isInitializing = true;
+            try {
+                log.info("First call to getAllTeams - loading all league data");
+                allTeamsCache = loadAllTeams();
+                return allTeamsCache;
+            } finally {
+                isInitializing = false;
+            }
+        }
     }
 
     private Map<String, String> populateTeamNameToIdMap(IsraelLeagueConfig israelLeagueConfig) {
@@ -72,31 +88,32 @@ public class LeagueService {
         return map;
     }
 
-    private List<TeamScoreEntry> initAllTeams() {
-        log.info("Start Initialize Europe Leagues");
+    private List<TeamScoreEntry> loadAllTeams() {
+        log.info("Loading all teams from all leagues");
         List<TeamScoreEntry> allTeams = new ArrayList<>();
+        
         for (EuropeLeagueType leagueType: EuropeLeagueType.values()) {
             try {
                 List<TeamScoreEntry> europeLeagueScoreBoard = getEuropeLeagueScoreBoard(leagueType);
-                log.info("Europe League: " + leagueType + " initialized");
+                log.info("Loaded {} teams from Europe League: {}", europeLeagueScoreBoard.size(), leagueType);
                 allTeams.addAll(europeLeagueScoreBoard);
             } catch (IOException e) {
-                log.error("Failed to initialize Europe League: " + leagueType, e);
+                log.error("Failed to load Europe League: " + leagueType, e);
             }
         }
+        
         for (IsraelLeagueType leagueType: IsraelLeagueType.values()) {
-            List<TeamScoreEntry> israelLeagueScoreBoard = null;
             try {
-                israelLeagueScoreBoard = getIsraelLeagueScoreBoard(leagueType);
-                log.info("Israel League: " + leagueType + " initialized");
+                List<TeamScoreEntry> israelLeagueScoreBoard = getIsraelLeagueScoreBoard(leagueType);
+                log.info("Loaded {} teams from Israel League: {}", israelLeagueScoreBoard.size(), leagueType);
+                allTeams.addAll(israelLeagueScoreBoard);
             } catch (IOException e) {
-                log.error("Failed to initialize Israel League: " + leagueType, e);
+                log.error("Failed to load Israel League: " + leagueType, e);
             }
-            allTeams.addAll(israelLeagueScoreBoard);
-
         }
+        
+        log.info("Total teams loaded: {}", allTeams.size());
         return allTeams;
-
     }
 
     public List<TeamScoreEntry> getEuropeLeagueScoreBoard(EuropeLeagueType leagueType) throws IOException {
