@@ -5,10 +5,10 @@ import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-//@Service
+@Service("springAiPerplexityService")
 @RequiredArgsConstructor
-public class OpenAiServiceImpl implements OpenAiService {
-    private final ChatModel chatModel;
+public class SpringAiPerplexityService implements OpenAiService {
+    
+    private final OpenAiChatModel chatModel;
 
     @Value("classpath:/templates/israelNationalLeaguePromptMain.st")
     private Resource ragPromptTemplate;
@@ -29,6 +30,7 @@ public class OpenAiServiceImpl implements OpenAiService {
     @Value("classpath:/templates/EuropeLeaguePredictorPrompt.st")
     private Resource europeLeagueTemplate;
 
+    @Override
     public Answer getEuropeLeagueAnswer(String homeTeam, String awayTeam) {
         String language = "hebrew";
         PromptTemplate promptTemplate = new PromptTemplate(europeLeagueTemplate);
@@ -42,15 +44,13 @@ public class OpenAiServiceImpl implements OpenAiService {
         ChatResponse response = chatModel.call(prompt);
 
         return new Answer(response.getResult().getOutput().getText());
-
-
     }
+
     @Override
     public Answer getAnswer(String leagueName, String homeTeam, String awayTeam,
                             String extraInput, List<TeamScoreEntry> scoreBoard,
                             List<TeamGamesEntry> homeTeamGames, List<TeamGamesEntry> awayTeamGames) {
         
-        // Convert lists to formatted strings
         String scoreBoardStr = scoreBoard.stream()
                 .map(TeamScoreEntry::toString)
                 .collect(Collectors.joining("\n"));
@@ -63,7 +63,6 @@ public class OpenAiServiceImpl implements OpenAiService {
                 .map(TeamGamesEntry::toString)
                 .collect(Collectors.joining("\n"));
         
-        // Create the prompt with all parameters
         PromptTemplate promptTemplate = new PromptTemplate(ragPromptTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
                 "leagueName", leagueName,
