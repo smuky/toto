@@ -1,20 +1,20 @@
 package com.muky.toto.config;
 
-import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.IsraelLeagueType;
 
 import java.util.Map;
 
 public class LeagueConfig {
-    private LeagueType type;
+    private IsraelLeagueType type;
     private String name;
     private Integer leagueId;
     private Map<String, String> team;
 
-    public LeagueType getType() {
+    public IsraelLeagueType getType() {
         return type;
     }
 
-    public void setType(LeagueType type) {
+    public void setType(IsraelLeagueType type) {
         this.type = type;
     }
 

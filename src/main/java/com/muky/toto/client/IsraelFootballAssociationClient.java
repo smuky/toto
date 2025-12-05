@@ -1,5 +1,8 @@
 package com.muky.toto.client;
 
+import com.muky.toto.config.IsraelLeagueConfig;
+import com.muky.toto.config.LeagueConfig;
+import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamScoreEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -21,12 +24,21 @@ import java.util.List;
 @Component
 public class IsraelFootballAssociationClient extends IFAClientBase {
 
+    private final IsraelLeagueConfig israelLeagueConfig;
+
     private static final String IFA_URL = "https://www.football.org.il/leagues/league/";
+
+    public IsraelFootballAssociationClient(IsraelLeagueConfig israelLeagueConfig) {
+        this.israelLeagueConfig = israelLeagueConfig;
+    }
     //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
-    @Cacheable(value = "league-table", key = "#leagueId + '-' + #seasonId")
-    public List<TeamScoreEntry> getLigaScoreBoard(String leagueId, String seasonId) throws IOException {
-        log.info("🔍 Cache MISS - Fetching league data for leagueId: " + leagueId + ", seasonId: " + seasonId);
+    @Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
+    public List<TeamScoreEntry> getLigaScoreBoard(IsraelLeagueType leagueType, String seasonId) throws IOException {
+        log.info("🔍 Cache MISS - Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
+
+        String leagueId = getLeagueId(leagueType);
+
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
         WebDriver driver = getWebDriver(options);
 
@@ -97,7 +109,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     String form = "";
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -123,6 +135,12 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         }
 
         return tableEntries;
+    }
+
+    private String getLeagueId(IsraelLeagueType leagueType) {
+        LeagueConfig league = israelLeagueConfig.getLeagueByType(leagueType);
+        String leagueId = String.valueOf(league.getLeagueId());
+        return leagueId;
     }
 
     private int parseIntSafely(String value) {

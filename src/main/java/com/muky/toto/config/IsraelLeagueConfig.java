@@ -1,6 +1,6 @@
 package com.muky.toto.config;
 
-import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.IsraelLeagueType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,7 +33,7 @@ public class IsraelLeagueConfig {
     /**
      * Get league configuration by type
      */
-    public LeagueConfig getLeagueByType(LeagueType type) {
+    public LeagueConfig getLeagueByType(IsraelLeagueType type) {
         return leagues.stream()
                 .filter(league -> league.getType() == type)
                 .findFirst()
@@ -43,7 +43,7 @@ public class IsraelLeagueConfig {
     /**
      * Get all leagues as a map indexed by type
      */
-    public Map<LeagueType, LeagueConfig> getLeaguesMap() {
+    public Map<IsraelLeagueType, LeagueConfig> getLeaguesMap() {
         return leagues.stream()
                 .collect(Collectors.toMap(LeagueConfig::getType, league -> league));
     }

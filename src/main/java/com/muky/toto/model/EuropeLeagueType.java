@@ -1,17 +1,19 @@
 package com.muky.toto.model;
 
+import lombok.Getter;
+
+@Getter
 public enum EuropeLeagueType {
-    PREMIER_LEAGUE("tables#PremierLeague"),
-    SPANISH_LA_LIGA("spanish-la-liga/table"),
-    ITALIAN_SERIE_A("italian-serie-a/table"),
-    GERMAN_BUNDESLIGA("german-bundesliga/table");
+    PREMIER_LEAGUE("tables#PremierLeague", LeagueEnum.PREMIER_LEAGUE),
+    SPANISH_LA_LIGA("spanish-la-liga/table", LeagueEnum.LA_LIGA),
+    ITALIAN_SERIE_A("italian-serie-a/table", LeagueEnum.ITALIAN_SERIE_A),
+    GERMAN_BUNDESLIGA("german-bundesliga/table", LeagueEnum.BUNDESLIGA);
 
     private final String bbcClientsuffix;
-    EuropeLeagueType(String bbcClientSuffix) {
-        this.bbcClientsuffix = bbcClientSuffix;
-    }
+    private final LeagueEnum leagueEnum;
 
-    public String getBBCClientSuffix() {
-        return bbcClientsuffix;
+    EuropeLeagueType(String bbcClientSuffix, LeagueEnum leagueEnum) {
+        this.bbcClientsuffix = bbcClientSuffix;
+        this.leagueEnum = leagueEnum;
     }
 }

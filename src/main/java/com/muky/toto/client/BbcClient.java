@@ -74,7 +74,7 @@ public class BbcClient {
                     String form = normalizeForm(rawForm);
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -91,7 +91,7 @@ public class BbcClient {
     }
 
     private String buildUrl(EuropeLeagueType leagueType) {
-        return BBC_BASE_URL + leagueType.getBBCClientSuffix();
+        return BBC_BASE_URL + leagueType.getBbcClientsuffix();
     }
 
     private String extractTeamName(Element row) {
