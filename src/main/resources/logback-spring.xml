@@ -2,10 +2,9 @@
 <configuration>
     <!-- Console appender with minimal overhead -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <immediateFlush>true</immediateFlush>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            <!-- Reduce buffer size to save memory -->
-            <immediateFlush>true</immediateFlush>
         </encoder>
     </appender>
 

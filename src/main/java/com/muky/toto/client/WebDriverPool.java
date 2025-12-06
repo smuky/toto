@@ -64,16 +64,10 @@ public class WebDriverPool {
         options.addArguments("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
         options.addArguments("--lang=he-IL");
         
-        // Memory optimization flags
+        // Conservative memory optimization - only safe flags
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-plugins");
-        options.addArguments("--disable-images");  // Don't load images - saves ~30-50 MB
-        options.addArguments("--blink-settings=imagesEnabled=false");
-        // Note: NOT disabling JavaScript as the page uses it to load table data
-        options.addArguments("--disk-cache-size=1");  // Minimal disk cache
-        options.addArguments("--media-cache-size=1");  // Minimal media cache
-        options.addArguments("--aggressive-cache-discard");
-        options.addArguments("--disable-application-cache");
+        options.addArguments("--mute-audio");
         
         return options;
     }
