@@ -7,12 +7,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,20 +18,20 @@ import java.util.List;
 @Component
 public class IFATeamGamesClient extends IFAClientBase {
 
+    private final WebDriverPool webDriverPool;
     private static final String URL = "https://www.football.org.il/team-details/team-games/";
+
+    public IFATeamGamesClient(WebDriverPool webDriverPool) {
+        this.webDriverPool = webDriverPool;
+    }
 
     @Cacheable(value = "team-games", key = "#teamId + '-' + #seasonId")
     public List<TeamGamesEntry> getGameList(String teamId, String seasonId) throws IOException {
         String teamLastGamesUrl = buildUrl(teamId, seasonId);
         List<TeamGamesEntry> gameEntries = new ArrayList<>();
-        WebDriver driver = null;
+        WebDriver driver = webDriverPool.getDriver();
 
         try {
-            // Initialize Chrome driver
-            driver = new ChromeDriver(options);
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
             // Navigate to the page
             driver.get(teamLastGamesUrl);
 
@@ -111,9 +109,7 @@ public class IFATeamGamesClient extends IFAClientBase {
         } catch (Exception e) {
             throw new IOException("Error fetching team games with Selenium: " + e.getMessage(), e);
         } finally {
-            if (driver != null) {
-                driver.quit();
-            }
+            webDriverPool.releaseDriver();
         }
 
         return gameEntries;

@@ -1,7 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.model.EuropeLeagueType;
-import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +55,7 @@ public interface LeagueApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/israel")
-    ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(@RequestParam LeagueType leagueType) throws IOException;
+    ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(@RequestParam IsraelLeagueType leagueType) throws IOException;
 
     @Operation(
             summary = "Get team games",
@@ -67,4 +67,19 @@ public interface LeagueApi {
     })
     @GetMapping("/team")
     ResponseEntity<List<TeamGamesEntry>> getTeamGames(@RequestParam String name) throws IOException;
+
+    @Operation(
+            summary = "Get all teams",
+            description = "Retrieves the list of all teams"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all teams"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/all")
+    ResponseEntity<List<TeamScoreEntry>> getAllTeams() throws IOException;
+
+
 }
+
+

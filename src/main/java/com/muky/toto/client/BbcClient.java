@@ -74,7 +74,7 @@ public class BbcClient {
                     String form = normalizeForm(rawForm);
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -91,25 +91,47 @@ public class BbcClient {
     }
 
     private String buildUrl(EuropeLeagueType leagueType) {
-        return BBC_BASE_URL + leagueType.getBBCClientSuffix();
+        return BBC_BASE_URL + leagueType.getBbcClientsuffix();
     }
 
     private String extractTeamName(Element row) {
         // BBC uses a specific link class for team names
         Element teamLink = row.select("a[class*=TeamNameLink]").first();
         if (teamLink != null) {
-            return teamLink.text();
+            String teamName = teamLink.text();
+            log.debug("Extracted team name from TeamNameLink: {}", teamName);
+            return teamName;
         }
         
         // Alternative: look for abbr tag which often contains team name
         Element abbr = row.select("abbr").first();
         if (abbr != null && !abbr.attr("title").isEmpty()) {
-            return abbr.attr("title");
+            String teamName = abbr.attr("title");
+            log.debug("Extracted team name from abbr title: {}", teamName);
+            return teamName;
         }
         
-        // Fallback: get text from second cell (team column)
+        // Alternative: look for any link in the first cell (position + team column)
         Elements cells = row.select("td");
-        return cells.size() > 1 ? cells.get(1).text() : "";
+        if (cells.size() > 0) {
+            Element firstCell = cells.get(0);
+            Element anyLink = firstCell.select("a").first();
+            if (anyLink != null && !anyLink.text().isEmpty()) {
+                String teamName = anyLink.text();
+                log.debug("Extracted team name from first cell link: {}", teamName);
+                return teamName;
+            }
+            
+            // Last resort: extract from first cell text and remove position number
+            String cellText = firstCell.text();
+            // Remove leading digits and whitespace (e.g., "13 Bologna" -> "Bologna")
+            String teamName = cellText.replaceFirst("^\\d+\\s+", "").trim();
+            log.debug("Extracted team name from first cell text (removed position): {} -> {}", cellText, teamName);
+            return teamName;
+        }
+        
+        log.warn("Could not extract team name from row");
+        return "";
     }
 
     private int parseIntSafely(String value) {
