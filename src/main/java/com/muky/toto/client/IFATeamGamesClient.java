@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class IFATeamGamesClient extends IFAClientBase {
+public class IFATeamGamesClient {
 
     private final WebDriverPool webDriverPool;
     private static final String URL = "https://www.football.org.il/team-details/team-games/";

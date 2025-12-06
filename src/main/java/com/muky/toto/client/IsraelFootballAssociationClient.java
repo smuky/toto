@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class IsraelFootballAssociationClient extends IFAClientBase {
+public class IsraelFootballAssociationClient {
 
     private final IsraelLeagueConfig israelLeagueConfig;
     private final WebDriverPool webDriverPool;
