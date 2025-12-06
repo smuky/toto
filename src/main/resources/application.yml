@@ -1,6 +1,18 @@
 spring:
   application:
     name: toto
+  main:
+    lazy-initialization: true  # Lazy bean initialization - saves 10-20 MB
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+    default-property-inclusion: non_null
   ai:
     openai:
       api-key: ${PERPLEXITY_API_KEY}
