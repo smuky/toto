@@ -117,7 +117,7 @@ public class Sport5Client {
                 String form = "";
 
                 TeamScoreEntry entry = new TeamScoreEntry(
-                        team, leagueEnum, played, won, drawn, lost,
+                        team, leagueEnum, null, played, won, drawn, lost,
                         goalsFor, goalsAgainst, goalDifference,
                         points, form
                 );

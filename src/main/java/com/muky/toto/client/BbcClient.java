@@ -74,7 +74,7 @@ public class BbcClient {
                     String form = normalizeForm(rawForm);
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), null, played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );

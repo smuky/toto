@@ -16,6 +16,10 @@ public class TeamScoreEntry {
 
     @Schema(description = "League")
     private LeagueEnum leagueEnum;
+
+    //exist only for israel teams from football.org.il
+    @Schema(description = "Team Id")
+    private String teamId;
     
     @Schema(description = "Number of games played")
     private int played;

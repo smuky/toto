@@ -63,6 +63,10 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
 
             for (Element row : tableRows) {
                 try {
+                    // Extract teamId from href attribute (e.g., "?team_id=1003&season_id=27")
+                    String href = row.attr("href");
+                    String teamId = extractTeamId(href);
+                    
                     // Get all columns in this row
                     Elements cols = row.select("div.table_col");
 
@@ -81,6 +85,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     // Col 7: Points (נקודות)
 
                     String team = cols.get(1).text().replace("קבוצה", "").trim();
+                    
+                    log.debug("Team: {} | TeamId: {}", team, teamId);
                     int played = parseIntSafely(cols.get(2).text().replace("משחקים", "").trim());
                     int won = parseIntSafely(cols.get(3).text().replace("ניצחונות", "").trim());
                     int drawn = parseIntSafely(cols.get(4).text().replace("תיקו", "").trim());
@@ -107,7 +113,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     String form = "";
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), teamId, played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -136,6 +142,26 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         LeagueConfig league = israelLeagueConfig.getLeagueByType(leagueType);
         String leagueId = String.valueOf(league.getLeagueId());
         return leagueId;
+    }
+
+    private String extractTeamId(String href) {
+        if (href == null || href.isEmpty()) {
+            return "";
+        }
+        
+        // Extract team_id from URL like "?team_id=1003&season_id=27"
+        try {
+            String[] params = href.split("[?&]");
+            for (String param : params) {
+                if (param.startsWith("team_id=")) {
+                    return param.substring("team_id=".length());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to extract teamId from href: {}", href);
+        }
+        
+        return "";
     }
 
     private int parseIntSafely(String value) {
