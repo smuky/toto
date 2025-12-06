@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.controllers.response.AllTeamsResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
@@ -70,14 +71,14 @@ public interface LeagueApi {
 
     @Operation(
             summary = "Get all teams",
-            description = "Retrieves the list of all teams"
+            description = "Retrieves the list of all teams with league translations map"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all teams"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/all")
-    ResponseEntity<List<TeamScoreEntry>> getAllTeams() throws IOException;
+    ResponseEntity<AllTeamsResponse> getAllTeams(@RequestParam(defaultValue = "en") String language) throws IOException;
 
 
 }

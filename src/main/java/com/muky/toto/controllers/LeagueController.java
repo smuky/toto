@@ -1,26 +1,34 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.cache.MemoryCache;
+import com.muky.toto.controllers.response.AllTeamsResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import com.muky.toto.service.LeagueService;
+import com.muky.toto.service.TranslationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class LeagueController implements LeagueApi {
 
     private final LeagueService leagueService;
     private final MemoryCache memoryCache;
+    private final TranslationService translationService;
 
-    public LeagueController(LeagueService leagueService, MemoryCache memoryCache) {
+    public LeagueController(LeagueService leagueService, MemoryCache memoryCache, TranslationService translationService) {
         this.leagueService = leagueService;
         this.memoryCache = memoryCache;
+        this.translationService = translationService;
     }
 
     @Override
@@ -47,9 +55,16 @@ public class LeagueController implements LeagueApi {
         return ResponseEntity.ok(teamGames);
     }
     @Override
-    public ResponseEntity<List<TeamScoreEntry>> getAllTeams() {
+    public ResponseEntity<AllTeamsResponse> getAllTeams(String language) {
         List<TeamScoreEntry> allTeams = memoryCache.getAllTeams();
-        return ResponseEntity.ok(allTeams);
+        
+        Map<LeagueEnum, String> leagueTranslations = Arrays.stream(LeagueEnum.values())
+                .collect(Collectors.toMap(
+                        league -> league,
+                        league -> translationService.getLeagueName(league, language)
+                ));
+        
+        return ResponseEntity.ok(new AllTeamsResponse(allTeams, leagueTranslations));
     }
 
 
