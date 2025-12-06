@@ -1,8 +1,8 @@
 package com.muky.toto.service;
 
+import com.muky.toto.cache.MemoryCache;
 import com.muky.toto.client.BbcClient;
 import com.muky.toto.client.IFATeamGamesClient;
-import com.muky.toto.client.IsraelFootballAssociationClient;
 import com.muky.toto.client.Sport5Client;
 import com.muky.toto.config.IsraelLeagueConfig;
 import com.muky.toto.config.LeagueConfig;
@@ -10,6 +10,7 @@ import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +26,16 @@ public class LeagueService {
 
     private final BbcClient bbcClient;
     private final Sport5Client sport5Client;
-    private final IsraelFootballAssociationClient israelFootballAssociationClient;
     private final IFATeamGamesClient iFAteamGamesclient;
     private final Map<String, String> teamNameToIdMap;
     private final String seasonId;
-    private volatile List<TeamScoreEntry> allTeamsCache;
-    private volatile boolean isInitializing = false;
+    private final MemoryCache memoryCache;
 
-    public LeagueService(BbcClient bbcClient, Sport5Client sport5Client, 
-                        IsraelFootballAssociationClient israelFootballAssociationClient,
-                        IsraelLeagueConfig israelLeagueConfig,
-                        IFATeamGamesClient iFAteamGamesclient) {
+    public LeagueService(BbcClient bbcClient, Sport5Client sport5Client,
+                         IsraelLeagueConfig israelLeagueConfig,
+                         IFATeamGamesClient iFAteamGamesclient, MemoryCache memoryCache) {
         this.bbcClient = bbcClient;
         this.sport5Client = sport5Client;
-        this.israelFootballAssociationClient = israelFootballAssociationClient;
         this.iFAteamGamesclient = iFAteamGamesclient;
 
         // Initialize season ID from configuration
@@ -46,33 +43,14 @@ public class LeagueService {
         
         // Initialize team name to ID map from national league configuration
         this.teamNameToIdMap = populateTeamNameToIdMap(israelLeagueConfig);
-        log.info("LeagueService initialized - data will be loaded on first request");
+
+        this.memoryCache = memoryCache;
     }
 
-    public List<TeamScoreEntry> getAllTeams() {
-        if (allTeamsCache != null) {
-            return allTeamsCache;
-        }
-        
-        synchronized (this) {
-            if (allTeamsCache != null) {
-                return allTeamsCache;
-            }
-            
-            if (isInitializing) {
-                log.warn("getAllTeams called while initialization is in progress");
-                return new ArrayList<>();
-            }
-            
-            isInitializing = true;
-            try {
-                log.info("First call to getAllTeams - loading all league data");
-                allTeamsCache = loadAllTeams();
-                return allTeamsCache;
-            } finally {
-                isInitializing = false;
-            }
-        }
+    @PostConstruct
+    private void initAllTeamsCache() {
+        log.info("Loading all teams from all leagues");
+        memoryCache.initAllTeamsCache(loadAllTeams());
     }
 
     private Map<String, String> populateTeamNameToIdMap(IsraelLeagueConfig israelLeagueConfig) {

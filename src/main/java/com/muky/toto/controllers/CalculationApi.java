@@ -28,23 +28,8 @@ public interface CalculationApi {
             @Parameter(description = "Home team name", required = true)
             @RequestParam("home-team") String homeTeam,
             @Parameter(description = "Away team name", required = true)
-            @RequestParam("away-team") String awayTeam
-    );
-
-    @Operation(
-            summary = "Calculate Europe league match odds",
-            description = "Calculates the odds for a match between two teams"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully calculated odds"),
-            @ApiResponse(responseCode = "400", description = "Invalid team names"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/calculate-europe-odds")
-    ResponseEntity<String> calculateEuropeLeagueOdds(
-            @Parameter(description = "Home team name", required = true)
-            @RequestParam("home-team") String homeTeam,
-            @Parameter(description = "Away team name", required = true)
-            @RequestParam("away-team") String awayTeam
+            @RequestParam("away-team") String awayTeam,
+            @Parameter(description = "Language")
+            @RequestParam("language") String language
     );
 }

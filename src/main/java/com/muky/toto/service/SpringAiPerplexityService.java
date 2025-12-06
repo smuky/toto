@@ -1,8 +1,8 @@
 package com.muky.toto.service;
 
+import com.muky.toto.cache.MemoryCache;
 import com.muky.toto.model.Answer;
-import com.muky.toto.model.TeamGamesEntry;
-import com.muky.toto.model.TeamScoreEntry;
+import com.muky.toto.model.LeagueEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service("springAiPerplexityService")
@@ -23,55 +21,19 @@ import java.util.stream.Collectors;
 public class SpringAiPerplexityService implements OpenAiService {
     
     private final OpenAiChatModel chatModel;
+    private final MemoryCache memoryCache;
 
-    @Value("classpath:/templates/israelNationalLeaguePromptMain.st")
-    private Resource ragPromptTemplate;
-
-    @Value("classpath:/templates/EuropeLeaguePredictorPrompt.st")
-    private Resource europeLeagueTemplate;
+    @Value("classpath:/templates/TotoPredictionPrompt.st")
+    private Resource totoPredictionTemplate;
 
     @Override
-    public Answer getEuropeLeagueAnswer(String homeTeam, String awayTeam) {
-        String language = "hebrew";
-        PromptTemplate promptTemplate = new PromptTemplate(europeLeagueTemplate);
+    public Answer getAnswer(String team1, String team2, String language, String extraInput, LeagueEnum leagueEnum) {
+        PromptTemplate promptTemplate = new PromptTemplate(totoPredictionTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
-                "homeTeam", homeTeam,
-                "awayTeam", awayTeam,
+                "team1", team1,
+                "team2", team2,
+                "scoreBoard", memoryCache.getTeamsByLeague(leagueEnum),
                 "language", language
-        ));
-
-        log.info("Prompt: {}", prompt);
-        ChatResponse response = chatModel.call(prompt);
-
-        return new Answer(response.getResult().getOutput().getText());
-    }
-
-    @Override
-    public Answer getAnswer(String leagueName, String homeTeam, String awayTeam,
-                            String extraInput, List<TeamScoreEntry> scoreBoard,
-                            List<TeamGamesEntry> homeTeamGames, List<TeamGamesEntry> awayTeamGames) {
-        
-        String scoreBoardStr = scoreBoard.stream()
-                .map(TeamScoreEntry::toString)
-                .collect(Collectors.joining("\n"));
-        
-        String homeTeamGamesStr = homeTeamGames.stream()
-                .map(TeamGamesEntry::toString)
-                .collect(Collectors.joining("\n"));
-        
-        String awayTeamGamesStr = awayTeamGames.stream()
-                .map(TeamGamesEntry::toString)
-                .collect(Collectors.joining("\n"));
-        
-        PromptTemplate promptTemplate = new PromptTemplate(ragPromptTemplate);
-        Prompt prompt = promptTemplate.create(Map.of(
-                "leagueName", leagueName,
-                "homeTeam", homeTeam,
-                "awayTeam", awayTeam,
-                "extraInput", extraInput != null ? extraInput : "",
-                "scoreBoard", scoreBoardStr,
-                "homeTeamGames", homeTeamGamesStr,
-                "awayTeamGames", awayTeamGamesStr
         ));
 
         log.info("Prompt: {}", prompt);

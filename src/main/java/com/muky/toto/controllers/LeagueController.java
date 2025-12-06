@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.cache.MemoryCache;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
@@ -15,9 +16,11 @@ import java.util.List;
 public class LeagueController implements LeagueApi {
 
     private final LeagueService leagueService;
+    private final MemoryCache memoryCache;
 
-    public LeagueController(LeagueService leagueService) {
+    public LeagueController(LeagueService leagueService, MemoryCache memoryCache) {
         this.leagueService = leagueService;
+        this.memoryCache = memoryCache;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class LeagueController implements LeagueApi {
     }
     @Override
     public ResponseEntity<List<TeamScoreEntry>> getAllTeams() {
-        List<TeamScoreEntry> allTeams = leagueService.getAllTeams();
+        List<TeamScoreEntry> allTeams = memoryCache.getAllTeams();
         return ResponseEntity.ok(allTeams);
     }
 
