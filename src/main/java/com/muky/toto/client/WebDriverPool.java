@@ -25,22 +25,18 @@ public class WebDriverPool {
     
     public WebDriver getDriver() {
         lock.lock();
-        try {
-            if (driver == null) {
-                log.info("Creating new WebDriver instance");
-                driver = new ChromeDriver(options);
-                driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            }
-            return driver;
-        } finally {
-            lock.unlock();
+        if (driver == null) {
+            log.info("Creating new WebDriver instance");
+            driver = new ChromeDriver(options);
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         }
+        // Don't unlock here - caller must call releaseDriver()
+        return driver;
     }
     
     public void releaseDriver() {
-        // No-op - driver is reused
-        // Just unlock if needed
+        lock.unlock();
     }
     
     @PreDestroy
@@ -67,6 +63,12 @@ public class WebDriverPool {
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
         options.addArguments("--lang=he-IL");
+        
+        // Conservative memory optimization - only safe flags
+        options.addArguments("--disable-extensions");
+        options.addArguments("--disable-plugins");
+        options.addArguments("--mute-audio");
+        
         return options;
     }
 }

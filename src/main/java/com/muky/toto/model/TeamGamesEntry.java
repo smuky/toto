@@ -1,24 +1,11 @@
 package com.muky.toto.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 public class TeamGamesEntry {
-    @Schema(description = "Game date")
     private String date;
-    
-    @Schema(description = "Home team name")
     private String homeTeam;
-    
-    @Schema(description = "Away team name")
     private String awayTeam;
-    
-    @Schema(description = "Stadium name")
     private String stadium;
-    
-    @Schema(description = "Game hour/time")
     private String hour;
-    
-    @Schema(description = "Game result (e.g., '2-1', 'TBD' if not played yet)")
     private String result;
 
     public TeamGamesEntry() {

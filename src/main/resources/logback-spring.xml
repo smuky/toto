@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Console appender with minimal overhead -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger - set to INFO to reduce overhead -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- Your application logs at INFO level -->
+    <logger name="com.muky.toto" level="INFO" />
+    
+    <!-- Reduce Spring Boot noise -->
+    <logger name="org.springframework" level="WARN" />
+    <logger name="org.springframework.web" level="WARN" />
+    <logger name="org.springframework.boot" level="WARN" />
+    
+    <!-- Reduce Selenium noise -->
+    <logger name="org.openqa.selenium" level="WARN" />
+    
+    <!-- Reduce HTTP client noise -->
+    <logger name="org.apache.http" level="WARN" />
+</configuration>

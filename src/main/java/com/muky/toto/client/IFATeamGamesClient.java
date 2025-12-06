@@ -7,7 +7,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class IFATeamGamesClient extends IFAClientBase {
+public class IFATeamGamesClient {
 
     private final WebDriverPool webDriverPool;
     private static final String URL = "https://www.football.org.il/team-details/team-games/";
@@ -25,7 +24,7 @@ public class IFATeamGamesClient extends IFAClientBase {
         this.webDriverPool = webDriverPool;
     }
 
-    @Cacheable(value = "team-games", key = "#teamId + '-' + #seasonId")
+    //@Cacheable(value = "team-games", key = "#teamId + '-' + #seasonId")
     public List<TeamGamesEntry> getGameList(String teamId, String seasonId) throws IOException {
         String teamLastGamesUrl = buildUrl(teamId, seasonId);
         List<TeamGamesEntry> gameEntries = new ArrayList<>();

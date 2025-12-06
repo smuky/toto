@@ -5,9 +5,9 @@ import com.muky.toto.client.IFATeamGamesClient;
 import com.muky.toto.client.IsraelFootballAssociationClient;
 import com.muky.toto.client.Sport5Client;
 import com.muky.toto.config.IsraelLeagueConfig;
-import com.muky.toto.config.LeagueConfig;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,26 +27,24 @@ public class LeagueService {
     private final BbcClient bbcClient;
     private final Sport5Client sport5Client;
     private final IsraelFootballAssociationClient israelFootballAssociationClient;
-    private final IFATeamGamesClient iFAteamGamesclient;
-    private final Map<String, String> teamNameToIdMap;
+    private final IFATeamGamesClient iFAteamGamesClient;
     private final String seasonId;
     private volatile List<TeamScoreEntry> allTeamsCache;
-    private volatile boolean isInitializing = false;
+    private volatile Map<String, TeamScoreEntry> teamNameToScoreEntryMap;
+    private volatile Map<LeagueEnum, List<TeamScoreEntry>> leagueToTeamsMap;
 
     public LeagueService(BbcClient bbcClient, Sport5Client sport5Client, 
                         IsraelFootballAssociationClient israelFootballAssociationClient,
                         IsraelLeagueConfig israelLeagueConfig,
-                        IFATeamGamesClient iFAteamGamesclient) {
+                        IFATeamGamesClient iFAteamGamesClient) {
         this.bbcClient = bbcClient;
         this.sport5Client = sport5Client;
         this.israelFootballAssociationClient = israelFootballAssociationClient;
-        this.iFAteamGamesclient = iFAteamGamesclient;
+        this.iFAteamGamesClient = iFAteamGamesClient;
 
         // Initialize season ID from configuration
         this.seasonId = String.valueOf(israelLeagueConfig.getSeasonId());
         
-        // Initialize team name to ID map from national league configuration
-        this.teamNameToIdMap = populateTeamNameToIdMap(israelLeagueConfig);
         log.info("LeagueService initialized - data will be loaded on first request");
     }
 
@@ -55,37 +54,17 @@ public class LeagueService {
         }
         
         synchronized (this) {
+            // Double-check after acquiring lock
             if (allTeamsCache != null) {
                 return allTeamsCache;
             }
             
-            if (isInitializing) {
-                log.warn("getAllTeams called while initialization is in progress");
-                return new ArrayList<>();
-            }
-            
-            isInitializing = true;
-            try {
-                log.info("First call to getAllTeams - loading all league data");
-                allTeamsCache = loadAllTeams();
-                return allTeamsCache;
-            } finally {
-                isInitializing = false;
-            }
+            log.info("First call to getAllTeams - loading all league data");
+            allTeamsCache = loadAllTeams();
+            teamNameToScoreEntryMap = allTeamsCache.stream().collect(Collectors.toMap(x -> x.getTeam(), x -> x));
+            leagueToTeamsMap = allTeamsCache.stream().collect(Collectors.groupingBy(x -> x.getLeagueEnum()));
+            return allTeamsCache;
         }
-    }
-
-    private Map<String, String> populateTeamNameToIdMap(IsraelLeagueConfig israelLeagueConfig) {
-        final Map<String, String> map = new HashMap<>();
-        LeagueConfig nationalLeague = israelLeagueConfig.getLeagueByType(IsraelLeagueType.NATIONAL_LEAGUE);
-        if (nationalLeague != null && nationalLeague.getTeam() != null) {
-            nationalLeague.getTeam().forEach((id, name) -> map.put(name, id));
-        }
-        LeagueConfig winnerLeague = israelLeagueConfig.getLeagueByType(IsraelLeagueType.WINNER);
-        if (winnerLeague != null && winnerLeague.getTeam() != null) {
-            winnerLeague.getTeam().forEach((id, name) -> map.put(name, id));
-        }
-        return map;
     }
 
     private List<TeamScoreEntry> loadAllTeams() {
@@ -129,9 +108,19 @@ public class LeagueService {
     }
 
     public List<TeamGamesEntry> getTeamGames(String name) throws IOException {
-        String teamId = teamNameToIdMap.get(name);
-        return iFAteamGamesclient.getGameList(teamId, seasonId);
+        TeamScoreEntry teamScoreEntry = teamNameToScoreEntryMap.get(name);
+        if (teamScoreEntry == null) {
+            throw new IOException("Team not found: " + name);
+        }
+
+        return iFAteamGamesClient.getGameList(teamScoreEntry.getTeamId(), seasonId);
     }
 
+    public TeamScoreEntry getTeamScore(String name) throws IOException {
+        return Optional.ofNullable(teamNameToScoreEntryMap.get(name)).orElseThrow(() -> new IOException("Team not found: " + name));
+    }
 
+    public List<TeamScoreEntry> getLeagueScoreBoard(LeagueEnum leagueEnum) {
+        return Optional.ofNullable(leagueToTeamsMap.get(leagueEnum)).orElseThrow(() -> new RuntimeException("League not found: " + leagueEnum));
+    }
 }

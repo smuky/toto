@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class IsraelFootballAssociationClient extends IFAClientBase {
+public class IsraelFootballAssociationClient {
 
     private final IsraelLeagueConfig israelLeagueConfig;
     private final WebDriverPool webDriverPool;
@@ -32,9 +31,9 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
     }
     //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
-    @Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
+    //@Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
     public List<TeamScoreEntry> getLigaScoreBoard(IsraelLeagueType leagueType, String seasonId) throws IOException {
-        log.info("🔍 Cache MISS - Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
+        log.info("🔍 Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
 
         String leagueId = getLeagueId(leagueType);
 
@@ -51,8 +50,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
             Thread.sleep(3000);
 
             // Get the page source and parse with JSoup
-            String pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
+            // Note: pageSource can be 2-5 MB, so we parse and discard it quickly
+            Document doc = Jsoup.parse(driver.getPageSource());
 
             // Find all table rows (using div elements with class "table_row")
             Elements tableRows = doc.select("a.table_row");
@@ -63,6 +62,10 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
 
             for (Element row : tableRows) {
                 try {
+                    // Extract teamId from href attribute (e.g., "?team_id=1003&season_id=27")
+                    String href = row.attr("href");
+                    String teamId = extractTeamId(href);
+                    
                     // Get all columns in this row
                     Elements cols = row.select("div.table_col");
 
@@ -81,6 +84,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     // Col 7: Points (נקודות)
 
                     String team = cols.get(1).text().replace("קבוצה", "").trim();
+                    
+                    log.debug("Team: {} | TeamId: {}", team, teamId);
                     int played = parseIntSafely(cols.get(2).text().replace("משחקים", "").trim());
                     int won = parseIntSafely(cols.get(3).text().replace("ניצחונות", "").trim());
                     int drawn = parseIntSafely(cols.get(4).text().replace("תיקו", "").trim());
@@ -107,7 +112,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     String form = "";
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, leagueType.getLeagueEnum(), played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), teamId, played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -136,6 +141,26 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         LeagueConfig league = israelLeagueConfig.getLeagueByType(leagueType);
         String leagueId = String.valueOf(league.getLeagueId());
         return leagueId;
+    }
+
+    private String extractTeamId(String href) {
+        if (href == null || href.isEmpty()) {
+            return "";
+        }
+        
+        // Extract team_id from URL like "?team_id=1003&season_id=27"
+        try {
+            String[] params = href.split("[?&]");
+            for (String param : params) {
+                if (param.startsWith("team_id=")) {
+                    return param.substring("team_id=".length());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to extract teamId from href: {}", href);
+        }
+        
+        return "";
     }
 
     private int parseIntSafely(String value) {
