@@ -32,7 +32,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
     }
     //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
-    @Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
+    //@Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
     public List<TeamScoreEntry> getLigaScoreBoard(IsraelLeagueType leagueType, String seasonId) throws IOException {
         log.info("🔍 Cache MISS - Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
 

@@ -25,7 +25,7 @@ public class IFATeamGamesClient extends IFAClientBase {
         this.webDriverPool = webDriverPool;
     }
 
-    @Cacheable(value = "team-games", key = "#teamId + '-' + #seasonId")
+    //@Cacheable(value = "team-games", key = "#teamId + '-' + #seasonId")
     public List<TeamGamesEntry> getGameList(String teamId, String seasonId) throws IOException {
         String teamLastGamesUrl = buildUrl(teamId, seasonId);
         List<TeamGamesEntry> gameEntries = new ArrayList<>();
