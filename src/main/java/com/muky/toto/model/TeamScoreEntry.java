@@ -1,7 +1,6 @@
 package com.muky.toto.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,47 +9,21 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class TeamScoreEntry {
-    @Schema(description = "Team name")
     private String team;
-
-    @Schema(description = "League")
     private LeagueEnum leagueEnum;
-
-    //exist only for israel teams from football.org.il
-    @Schema(description = "Team Id")
     private String teamId;
-    
-    @Schema(description = "Number of games played")
     private byte played;
-    
-    @Schema(description = "Number of games won")
     private byte won;
-    
-    @Schema(description = "Number of games drawn")
     private byte drawn;
-    
-    @Schema(description = "Number of games lost")
     private byte lost;
-    
-    @Schema(description = "Goals scored by the team")
     private byte goalsFor;
-    
-    @Schema(description = "Goals conceded by the team")
     private byte goalsAgainst;
-    
-    @Schema(description = "Goal difference (goals for minus goals against)")
     private short goalDifference;
-    
-    @Schema(description = "Total points earned")
     private byte points;
     
     @JsonIgnore
-    @Schema(hidden = true)
     private short formEncoded;
     
-    @Schema(description = "Recent form from last 6 games. Format: space-separated W/L/D letters. " +
-            "First letter is the oldest game, last letter is the most recent game. " +
-            "Example: 'W W L D W L' means oldest game was a win, most recent was a loss")
     public String getForm() {
         return decodeForm(formEncoded);
     }
