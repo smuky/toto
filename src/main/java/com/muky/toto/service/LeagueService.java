@@ -52,14 +52,19 @@ public class LeagueService {
         if (allTeamsCache != null) {
             return allTeamsCache;
         }
-
-        log.info("First call to getAllTeams - loading all league data");
-        allTeamsCache = loadAllTeams();
-        teamNameToScoreEntryMap = allTeamsCache.stream().collect(Collectors.toMap(x -> x.getTeam(), x -> x));
-        leagueToTeamsMap = allTeamsCache.stream().collect(Collectors.groupingBy(x -> x.getLeagueEnum()));
-        return allTeamsCache;
-
-
+        
+        synchronized (this) {
+            // Double-check after acquiring lock
+            if (allTeamsCache != null) {
+                return allTeamsCache;
+            }
+            
+            log.info("First call to getAllTeams - loading all league data");
+            allTeamsCache = loadAllTeams();
+            teamNameToScoreEntryMap = allTeamsCache.stream().collect(Collectors.toMap(x -> x.getTeam(), x -> x));
+            leagueToTeamsMap = allTeamsCache.stream().collect(Collectors.groupingBy(x -> x.getLeagueEnum()));
+            return allTeamsCache;
+        }
     }
 
     private List<TeamScoreEntry> loadAllTeams() {

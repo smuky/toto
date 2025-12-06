@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
 
     //@Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
     public List<TeamScoreEntry> getLigaScoreBoard(IsraelLeagueType leagueType, String seasonId) throws IOException {
-        log.info("🔍 Cache MISS - Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
+        log.info("🔍 Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
 
         String leagueId = getLeagueId(leagueType);
 
@@ -51,8 +50,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
             Thread.sleep(3000);
 
             // Get the page source and parse with JSoup
-            String pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
+            // Note: pageSource can be 2-5 MB, so we parse and discard it quickly
+            Document doc = Jsoup.parse(driver.getPageSource());
 
             // Find all table rows (using div elements with class "table_row")
             Elements tableRows = doc.select("a.table_row");
