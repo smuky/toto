@@ -1,7 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.model.EuropeLeagueType;
-import com.muky.toto.model.LeagueType;
+import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import com.muky.toto.service.LeagueService;
@@ -33,7 +33,7 @@ public class LeagueController implements LeagueApi {
     }
 
     @Override
-    public ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(LeagueType leagueType) throws IOException {
+    public ResponseEntity<List<TeamScoreEntry>> getIsraelLeagueScoreBoard(IsraelLeagueType leagueType) throws IOException {
         List<TeamScoreEntry> israelLeagueTable = leagueService.getIsraelLeagueScoreBoard(leagueType);
         return ResponseEntity.ok(israelLeagueTable);
     }
@@ -42,6 +42,11 @@ public class LeagueController implements LeagueApi {
     public ResponseEntity<List<TeamGamesEntry>> getTeamGames(String name) throws IOException {
         List<TeamGamesEntry> teamGames = leagueService.getTeamGames(name);
         return ResponseEntity.ok(teamGames);
+    }
+    @Override
+    public ResponseEntity<List<TeamScoreEntry>> getAllTeams() {
+        List<TeamScoreEntry> allTeams = leagueService.getAllTeams();
+        return ResponseEntity.ok(allTeams);
     }
 
 

@@ -1,5 +1,6 @@
 package com.muky.toto.client;
 
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.TeamScoreEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,7 +16,7 @@ import java.util.List;
 public class Sport5Client {
 
     private static final String SPORT5_LEAGUE_TABLE_URL = "https://www.sport5.co.il/Pages/LeagueTable.aspx?FolderID=44";
-    public List<TeamScoreEntry> getLeagueTable() throws IOException {
+    public List<TeamScoreEntry> getLeagueTable(LeagueEnum leagueEnum) throws IOException {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
 
         // Fetch the page
@@ -116,7 +117,7 @@ public class Sport5Client {
                 String form = "";
 
                 TeamScoreEntry entry = new TeamScoreEntry(
-                        team, played, won, drawn, lost,
+                        team, leagueEnum, null, played, won, drawn, lost,
                         goalsFor, goalsAgainst, goalDifference,
                         points, form
                 );

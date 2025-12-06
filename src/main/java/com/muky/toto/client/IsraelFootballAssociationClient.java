@@ -1,5 +1,8 @@
 package com.muky.toto.client;
 
+import com.muky.toto.config.IsraelLeagueConfig;
+import com.muky.toto.config.LeagueConfig;
+import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamScoreEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -7,31 +10,37 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
-public class IsraelFootballAssociationClient extends IFAClientBase {
+public class IsraelFootballAssociationClient {
+
+    private final IsraelLeagueConfig israelLeagueConfig;
+    private final WebDriverPool webDriverPool;
 
     private static final String IFA_URL = "https://www.football.org.il/leagues/league/";
+
+    public IsraelFootballAssociationClient(IsraelLeagueConfig israelLeagueConfig, WebDriverPool webDriverPool) {
+        this.israelLeagueConfig = israelLeagueConfig;
+        this.webDriverPool = webDriverPool;
+    }
     //private static final String NATIONAL_LEAGUE_URL = "https://www.football.org.il/leagues/league/?league_id=45&season_id=27";
 
-    @Cacheable(value = "league-table", key = "#leagueId + '-' + #seasonId")
-    public List<TeamScoreEntry> getLigaScoreBoard(String leagueId, String seasonId) throws IOException {
-        log.info("🔍 Cache MISS - Fetching league data for leagueId: " + leagueId + ", seasonId: " + seasonId);
+    //@Cacheable(value = "league-type", key = "#leagueType + '-' + #seasonId")
+    public List<TeamScoreEntry> getLigaScoreBoard(IsraelLeagueType leagueType, String seasonId) throws IOException {
+        log.info("🔍 Fetching league data for leagueType: " + leagueType + ", seasonId: " + seasonId);
+
+        String leagueId = getLeagueId(leagueType);
+
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
-        WebDriver driver = getWebDriver(options);
+        WebDriver driver = webDriverPool.getDriver();
 
         try {
-
             // Navigate to the page
             String url = IFA_URL + "?league_id=" + leagueId + "&season_id=" + seasonId;
             log.info("getLigaScoreBoard URL: {}", url);
@@ -41,8 +50,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
             Thread.sleep(3000);
 
             // Get the page source and parse with JSoup
-            String pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
+            // Note: pageSource can be 2-5 MB, so we parse and discard it quickly
+            Document doc = Jsoup.parse(driver.getPageSource());
 
             // Find all table rows (using div elements with class "table_row")
             Elements tableRows = doc.select("a.table_row");
@@ -53,6 +62,10 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
 
             for (Element row : tableRows) {
                 try {
+                    // Extract teamId from href attribute (e.g., "?team_id=1003&season_id=27")
+                    String href = row.attr("href");
+                    String teamId = extractTeamId(href);
+                    
                     // Get all columns in this row
                     Elements cols = row.select("div.table_col");
 
@@ -71,6 +84,8 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     // Col 7: Points (נקודות)
 
                     String team = cols.get(1).text().replace("קבוצה", "").trim();
+                    
+                    log.debug("Team: {} | TeamId: {}", team, teamId);
                     int played = parseIntSafely(cols.get(2).text().replace("משחקים", "").trim());
                     int won = parseIntSafely(cols.get(3).text().replace("ניצחונות", "").trim());
                     int drawn = parseIntSafely(cols.get(4).text().replace("תיקו", "").trim());
@@ -97,7 +112,7 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
                     String form = "";
 
                     TeamScoreEntry entry = new TeamScoreEntry(
-                            team, played, won, drawn, lost,
+                            team, leagueType.getLeagueEnum(), teamId, played, won, drawn, lost,
                             goalsFor, goalsAgainst, goalDifference,
                             points, form
                     );
@@ -116,13 +131,36 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         } catch (Exception e) {
             throw new IOException("Error fetching league table with Selenium: " + e.getMessage(), e);
         } finally {
-            // Always close the browser
-            if (driver != null) {
-                driver.quit();
-            }
+            webDriverPool.releaseDriver();
         }
 
         return tableEntries;
+    }
+
+    private String getLeagueId(IsraelLeagueType leagueType) {
+        LeagueConfig league = israelLeagueConfig.getLeagueByType(leagueType);
+        String leagueId = String.valueOf(league.getLeagueId());
+        return leagueId;
+    }
+
+    private String extractTeamId(String href) {
+        if (href == null || href.isEmpty()) {
+            return "";
+        }
+        
+        // Extract team_id from URL like "?team_id=1003&season_id=27"
+        try {
+            String[] params = href.split("[?&]");
+            for (String param : params) {
+                if (param.startsWith("team_id=")) {
+                    return param.substring("team_id=".length());
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to extract teamId from href: {}", href);
+        }
+        
+        return "";
     }
 
     private int parseIntSafely(String value) {
@@ -133,13 +171,5 @@ public class IsraelFootballAssociationClient extends IFAClientBase {
         } catch (NumberFormatException e) {
             return 0;
         }
-    }
-
-    private WebDriver getWebDriver(ChromeOptions options) {
-        // Initialize Chrome driver
-        WebDriver driver = new ChromeDriver(options);
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        return driver;
     }
 }
