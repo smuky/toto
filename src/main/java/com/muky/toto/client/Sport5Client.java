@@ -1,6 +1,6 @@
 package com.muky.toto.client;
 
-import com.muky.toto.model.LeagueEnum;
+import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamScoreEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,13 +14,14 @@ import java.util.List;
 
 @Component
 public class Sport5Client {
+    private static final String SPORT5_BASE_URL = "https://www.sport5.co.il/Pages/LeagueTable.aspx?";
 
-    private static final String SPORT5_LEAGUE_TABLE_URL = "https://www.sport5.co.il/Pages/LeagueTable.aspx?FolderID=44";
-    public List<TeamScoreEntry> getLeagueTable(LeagueEnum leagueEnum) throws IOException {
+    public List<TeamScoreEntry> getLeagueTable(IsraelLeagueType leagueType) throws IOException {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
 
+        String url = buildUrl(leagueType);
         // Fetch the page
-        Document doc = Jsoup.connect(SPORT5_LEAGUE_TABLE_URL)
+        Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .timeout(10000)
                 .get();
@@ -117,7 +118,7 @@ public class Sport5Client {
                 String form = "";
 
                 TeamScoreEntry entry = new TeamScoreEntry(
-                        team, leagueEnum, played, won, drawn, lost,
+                        team, leagueType.getLeagueEnum(), played, won, drawn, lost,
                         goalsFor, goalsAgainst, goalDifference,
                         points, form
                 );
@@ -131,6 +132,10 @@ public class Sport5Client {
         }
 
         return tableEntries;
+    }
+
+    private String buildUrl(IsraelLeagueType leagueType) {
+        return SPORT5_BASE_URL + leagueType.getSuffix();
     }
 
     private int parseIntSafely(String value) {

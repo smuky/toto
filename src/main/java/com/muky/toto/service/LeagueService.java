@@ -121,11 +121,11 @@ public class LeagueService {
     }
 
     public List<TeamScoreEntry> getIsraelPremierLeagueScoreBoard() throws IOException {
-        return sport5Client.getLeagueTable(IsraelLeagueType.NATIONAL_LEAGUE.getLeagueEnum());
+        return sport5Client.getLeagueTable(IsraelLeagueType.NATIONAL_LEAGUE);
     }
 
     public List<TeamScoreEntry> getIsraelLeagueScoreBoard(IsraelLeagueType leagueType) throws IOException {
-        return israelFootballAssociationClient.getLigaScoreBoard(leagueType, seasonId);
+        return sport5Client.getLeagueTable(leagueType);
     }
 
     public List<TeamGamesEntry> getTeamGames(String name) throws IOException {
