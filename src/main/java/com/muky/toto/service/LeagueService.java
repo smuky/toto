@@ -32,7 +32,6 @@ public class LeagueService {
     private volatile List<TeamScoreEntry> allTeamsCache;
     private volatile Map<String, TeamScoreEntry> teamNameToScoreEntryMap;
     private volatile Map<LeagueEnum, List<TeamScoreEntry>> leagueToTeamsMap;
-    private volatile boolean isInitializing = false;
 
     public LeagueService(BbcClient bbcClient, Sport5Client sport5Client, 
                         IsraelFootballAssociationClient israelFootballAssociationClient,
@@ -53,28 +52,14 @@ public class LeagueService {
         if (allTeamsCache != null) {
             return allTeamsCache;
         }
-        
-        synchronized (this) {
-            if (allTeamsCache != null) {
-                return allTeamsCache;
-            }
-            
-            if (isInitializing) {
-                log.warn("getAllTeams called while initialization is in progress");
-                return new ArrayList<>();
-            }
-            
-            isInitializing = true;
-            try {
-                log.info("First call to getAllTeams - loading all league data");
-                allTeamsCache = loadAllTeams();
-                teamNameToScoreEntryMap = allTeamsCache.stream().collect(Collectors.toMap(x -> x.getTeam(), x -> x));
-                leagueToTeamsMap = allTeamsCache.stream().collect(Collectors.groupingBy(x -> x.getLeagueEnum()));
-                return allTeamsCache;
-            } finally {
-                isInitializing = false;
-            }
-        }
+
+        log.info("First call to getAllTeams - loading all league data");
+        allTeamsCache = loadAllTeams();
+        teamNameToScoreEntryMap = allTeamsCache.stream().collect(Collectors.toMap(x -> x.getTeam(), x -> x));
+        leagueToTeamsMap = allTeamsCache.stream().collect(Collectors.groupingBy(x -> x.getLeagueEnum()));
+        return allTeamsCache;
+
+
     }
 
     private List<TeamScoreEntry> loadAllTeams() {
