@@ -5,7 +5,6 @@ import com.muky.toto.controllers.response.AllTeamsResponse;
 import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
-import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import com.muky.toto.service.LeagueService;
@@ -14,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 public class LeagueController implements LeagueApi {
@@ -58,32 +54,7 @@ public class LeagueController implements LeagueApi {
     @Override
     public ResponseEntity<AllTeamsResponse> getAllTeams(String language) {
         List<TeamScoreEntry> allTeams = memoryCache.getAllTeams();
-        
-        Map<LeagueEnum, String> leagueTranslations = Arrays.stream(LeagueEnum.values())
-                .collect(Collectors.toMap(
-                        league -> league,
-                        league -> translationService.getLeagueName(league, language)
-                ));
-        
-        Map<String, String> languageTranslations = Map.of(
-                "en", translationService.translate("language.english", language),
-                "es", translationService.translate("language.spanish", language),
-                "it", translationService.translate("language.italian", language),
-                "de", translationService.translate("language.german", language),
-                "he", translationService.translate("language.hebrew", language)
-        );
-        
-        String selectLeague = translationService.translate("select.league", language);
-        String settings = translationService.translate("settings", language);
-        String about = translationService.translate("about", language);
-        
-        TranslationResponse translations = new TranslationResponse(
-                leagueTranslations,
-                languageTranslations,
-                selectLeague,
-                settings,
-                about
-        );
+        TranslationResponse translations = translationService.getTranslations(language);
         
         return ResponseEntity.ok(new AllTeamsResponse(allTeams, translations));
     }

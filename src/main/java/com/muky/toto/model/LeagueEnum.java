@@ -9,7 +9,8 @@ public enum LeagueEnum {
     ITALIAN_SERIE_A("league.italy.serie_a"),
     BUNDESLIGA("league.german.bundesliga"),
     ISRAEL_NATIONAL_LEAGUE("league.israel.national"),
-    ISRAEL_WINNER("league.israel.winner");
+    ISRAEL_WINNER("league.israel.winner"),
+    FRANCE_LIGUE_1("league.french-ligue-one");
 
     private final String translationKey;
     LeagueEnum(String translationKey) {
