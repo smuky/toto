@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.cache.MemoryCache;
 import com.muky.toto.controllers.response.AllTeamsResponse;
+import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.LeagueEnum;
@@ -64,7 +65,27 @@ public class LeagueController implements LeagueApi {
                         league -> translationService.getLeagueName(league, language)
                 ));
         
-        return ResponseEntity.ok(new AllTeamsResponse(allTeams, leagueTranslations));
+        Map<String, String> languageTranslations = Map.of(
+                "en", translationService.translate("language.english", language),
+                "es", translationService.translate("language.spanish", language),
+                "it", translationService.translate("language.italian", language),
+                "de", translationService.translate("language.german", language),
+                "he", translationService.translate("language.hebrew", language)
+        );
+        
+        String selectLeague = translationService.translate("select.league", language);
+        String settings = translationService.translate("settings", language);
+        String about = translationService.translate("about", language);
+        
+        TranslationResponse translations = new TranslationResponse(
+                leagueTranslations,
+                languageTranslations,
+                selectLeague,
+                settings,
+                about
+        );
+        
+        return ResponseEntity.ok(new AllTeamsResponse(allTeams, translations));
     }
 
 
