@@ -17,6 +17,7 @@ Rules:
   * If not found: assume {team1} = home, {team2} = away.
 - Use {scoreBoard} for table/standings.
 - For all other data (form, xG, news): use latest online info.
+- IMPORTANT: Do NOT include any citation markers like [1], [2], [n] in your response. Write the analysis in natural language without reference numbers.
 
 Required Analysis (to be mapped to JSON fields):
 1. Analyze League table, Recent form, xG/xGA, Head-to-head, and Key news.
