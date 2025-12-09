@@ -1,5 +1,6 @@
 package com.muky.toto.service;
 
+import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.cache.MemoryCache;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -27,5 +28,20 @@ public class EuropeCalculationService {
         Answer answer = openAiService.getAnswer(homeTeam, awayTeam, language, "", leagueEnum);
         log.info("Question {}. /n Answer: {}", homeTeam + " - " + awayTeam, answer);
         return answer;
+    }
+
+
+    public TodoPredictionPromptResponse calculateTotoPrediction(String homeTeam, String awayTeam, String language) {
+        TeamScoreEntry homeTeamScoreEntry = memoryCache.getTeamScoreEntry(homeTeam);
+        LeagueEnum leagueEnum = homeTeamScoreEntry.getLeagueEnum();
+        TeamScoreEntry awayTeamScoreEntry = memoryCache.getTeamScoreEntry(awayTeam);
+
+        if (leagueEnum != awayTeamScoreEntry.getLeagueEnum()) {
+            throw new IllegalArgumentException("Teams are not in the same league");
+        }
+
+        TodoPredictionPromptResponse todoPredictionPromptResponse = openAiService.getTodoPredictionPromptResponse(homeTeam, awayTeam, language, "", leagueEnum);
+        log.info("Question {}. /n Answer: {}", homeTeam + " - " + awayTeam, todoPredictionPromptResponse);
+        return todoPredictionPromptResponse;
     }
 }

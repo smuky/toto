@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
 import com.muky.toto.service.EuropeCalculationService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,20 @@ public class CalculationController implements CalculationApi {
             return ResponseEntity.ok(answer.answer());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, String language) {
+        log.info("calculatePrediction: homeTeam={}, awayTeam={}, language={}", homeTeam, awayTeam, language);
+        try {
+            if (language == null) {
+                language = "hebrew";
+            }
+            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language);
+            return ResponseEntity.ok(todoPredictionPromptResponse);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
