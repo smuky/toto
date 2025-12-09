@@ -5,7 +5,7 @@ import java.util.Map;
 public record TodoPredictionPromptResponse(
         MatchDetails matchDetails,
         PredictionStats analysis,
-        Map<String, Integer> probabilities, // Keys: "1", "X", "2", Values: Percentage
+        Map<String, String> probabilities, // Keys: "1", "X", "2", Values: Percentage
         String justification
 ) {
     public record MatchDetails(
