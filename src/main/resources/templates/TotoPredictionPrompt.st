@@ -17,7 +17,7 @@ Rules:
   * If not found: assume {team1} = home, {team2} = away; clearly say so.
 - Use {scoreBoard} for table/standings (position, points, GD).
 - For all other data (form, xG, news): use latest online info.
-- Do not invent detailed stats. If data missing (e.g., xG, injuries) just skip it and don't say it
+- If data is missing skip it and don't mention that it is missing.
 
 Required Analysis:
 1. League table from {scoreBoard}
@@ -37,4 +37,3 @@ Required Analysis:
 
 3) Justification:
    Brief, professional, and data-driven.
-   Clearly link table, form, xG/xGA, H2H, and news to the probabilities.
