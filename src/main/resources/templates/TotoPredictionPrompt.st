@@ -17,9 +17,7 @@ Rules:
   * If not found: assume {team1} = home, {team2} = away; clearly say so.
 - Use {scoreBoard} for table/standings (position, points, GD).
 - For all other data (form, xG, news): use latest online info.
-- Do not invent detailed stats. If data missing (e.g., xG, injuries):
-  * Say what is missing
-  * Increase uncertainty in reasoning
+- Do not invent detailed stats. If data missing (e.g., xG, injuries) just skip it and don't say it
 
 Required Analysis:
 1. League table from {scoreBoard}
@@ -28,7 +26,7 @@ Required Analysis:
    - Use recent averages if available
    - Estimate projected match xG (home vs away)
    - Explain how xG advantage impacts probabilities
-4. Head-to-head (recent only)
+4. Head-to-head
 5. Key news (injuries, suspensions)
 6. Context: importance, schedule congestion, home/away strengths
 

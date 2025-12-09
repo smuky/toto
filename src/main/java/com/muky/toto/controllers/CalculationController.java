@@ -2,9 +2,11 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.model.Answer;
 import com.muky.toto.service.EuropeCalculationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 public class CalculationController implements CalculationApi {
 
@@ -16,6 +18,7 @@ public class CalculationController implements CalculationApi {
 
     @Override
     public ResponseEntity<String> calculateOdds(String homeTeam, String awayTeam, String language) {
+        log.info("calculateOdds: homeTeam={}, awayTeam={}, language={}", homeTeam, awayTeam, language);
         try {
             if (language == null) {
                 language = "hebrew";
