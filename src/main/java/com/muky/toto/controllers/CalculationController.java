@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
+import com.muky.toto.model.SupportedLanguageEnum;
 import com.muky.toto.service.EuropeCalculationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +33,13 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, String language) {
+    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, SupportedLanguageEnum language) {
         log.info("calculatePrediction: homeTeam={}, awayTeam={}, language={}", homeTeam, awayTeam, language);
         try {
             if (language == null) {
-                language = "hebrew";
+                language = SupportedLanguageEnum.EN;
             }
-            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language);
+            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language.getLanguage());
             return ResponseEntity.ok(todoPredictionPromptResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

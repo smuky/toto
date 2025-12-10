@@ -14,6 +14,12 @@ spring:
       embedding:
         enabled: false
 
+redis:
+  host: ${REDIS_HOST:redis-18068.c83.us-east-1-2.ec2.cloud.redislabs.com}
+  port: ${REDIS_PORT:18068}
+  password: ${REDIS_PASSWORD}
+  expire-seconds: ${REDIS_EXPIRE_SECONDS:86400}
+
 
 
 
