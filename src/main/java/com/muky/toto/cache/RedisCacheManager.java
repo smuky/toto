@@ -29,15 +29,21 @@ public class RedisCacheManager {
     ) {
         this.redisExpireSeconds = redisExpireSeconds;
 
+        log.info("Redis connection going to initialize to {}:{}, {}", redisHost, redisPort, redisPassword);
+
         JedisClientConfig config = DefaultJedisClientConfig.builder()
                 .user("default")
-                .password("GZh9aBrS5BufN7LsLAzZCNFQ8fzVtv9v")
+                .password(redisPassword)
                 .build();
 
+        log.info("past config");
+
         jedis = new UnifiedJedis(
-                new HostAndPort("redis-18068.c83.us-east-1-2.ec2.cloud.redislabs.com", 18068),
+                new HostAndPort(redisHost, redisPort),
                 config
         );
+        
+        log.info("Redis connection initialized to {}:{}", redisHost, redisPort);
     }
 
     private String generateKey(String team1, String team2, String lang) {
