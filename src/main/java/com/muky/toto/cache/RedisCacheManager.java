@@ -1,9 +1,9 @@
 package com.muky.toto.cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
-import com.muky.toto.config.RedisProperties;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.DefaultJedisClientConfig;
@@ -19,18 +19,23 @@ import java.util.Optional;
 public class RedisCacheManager {
     private final UnifiedJedis jedis;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final RedisProperties redisProperties;
+    private final int redisExpireSeconds;
 
-    public RedisCacheManager(RedisProperties redisProperties) {
-        this.redisProperties = redisProperties;
-        
+    public RedisCacheManager(
+            @Value("${redis.host}") String redisHost,
+            @Value("${redis.port}") int redisPort,
+            @Value("${redis.password}") String redisPassword,
+            @Value("${redis.expire-seconds}") int redisExpireSeconds
+    ) {
+        this.redisExpireSeconds = redisExpireSeconds;
+
         JedisClientConfig config = DefaultJedisClientConfig.builder()
                 .user("default")
-                .password(redisProperties.getPassword())
+                .password("GZh9aBrS5BufN7LsLAzZCNFQ8fzVtv9v")
                 .build();
 
         jedis = new UnifiedJedis(
-                new HostAndPort(redisProperties.getHost(), redisProperties.getPort()),
+                new HostAndPort("redis-18068.c83.us-east-1-2.ec2.cloud.redislabs.com", 18068),
                 config
         );
     }
@@ -42,13 +47,14 @@ public class RedisCacheManager {
 
     }
 
+    // TRICK #2: Set with Expiration (SETEX)
     public void cachePrediction(String team1, String team2, String lang, TodoPredictionPromptResponse predictionResponse) {
         String key = generateKey(team1, team2, lang);
 
         try {
             String json = objectMapper.writeValueAsString(predictionResponse);
             byte[] compressedData = CompressionUtils.compress(json);
-            jedis.setex(key.getBytes(), redisProperties.getExpireSeconds(), compressedData);
+            jedis.setex(key.getBytes(), redisExpireSeconds, compressedData);
             log.info("Stored key {}", key);
         } catch (IOException e) {
             throw new RuntimeException(e);
