@@ -75,20 +75,26 @@ public class SpringAiPerplexityService implements OpenAiService {
 
         log.info("Prompt: {}", prompt);
 
-        // 4. Call the model with temperature
+        // 4. Call the model with temperature and max tokens
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .temperature(0.3)
+                .maxTokens(2000)
                 .build();
         
         Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
         ChatResponse response = chatModel.call(promptWithOptions);
 
         // 5. Convert the raw string response into your Java Object
-        TodoPredictionPromptResponse prediction = converter.convert(response.getResult().getOutput().getText());
-
-        // Now you have a typed object!
-        log.info("Justification (in {}): {}", language, prediction.justification());
-
-        return prediction;
+        String rawResponse = response.getResult().getOutput().getText();
+        log.debug("Raw AI response: {}", rawResponse);
+        
+        try {
+            TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
+            log.info("Justification (in {}): {}", language, prediction.justification());
+            return prediction;
+        } catch (Exception e) {
+            log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);
+            throw new RuntimeException("Failed to parse AI response - response may be truncated or malformed", e);
+        }
     }
 }
