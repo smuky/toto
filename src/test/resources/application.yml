@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: toto
+  ai:
+    openai:
+      api-key: test-key
+      base-url: https://api.perplexity.ai
+      chat:
+        completions-path: /chat/completions
+        options:
+          model: sonar
+          temperature: 0.3
+          max-tokens: 2000
+      embedding:
+        enabled: false
+
+redis:
+  host: localhost
+  port: 6379
+  password: test-password
+  expire-seconds: 86400
+
+app:
+  league:
+    israel:
+      season_id: 27
+      leagues:
+        - type: NATIONAL_LEAGUE
+          name: לאומית
+          league_id: 45
+          team:
+            '1003': מכבי הרצליה
+        - type: WINNER
+          name: winner
+          league_id: 40
+          team:
+            '2171': הפועל באר שבע
