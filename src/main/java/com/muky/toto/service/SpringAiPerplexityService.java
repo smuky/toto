@@ -87,7 +87,6 @@ public class SpringAiPerplexityService implements OpenAiService {
         TodoPredictionPromptResponse prediction = converter.convert(response.getResult().getOutput().getText());
 
         // Now you have a typed object!
-        log.info("Home Win Probability: {}%", prediction.probabilities().get("1"));
         log.info("Justification (in {}): {}", language, prediction.justification());
 
         return prediction;
