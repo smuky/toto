@@ -184,19 +184,19 @@ public class BbcClient {
             return "";
         }
         
-        // Split by whitespace and extract only standalone W, L, and D (single-character words)
         String[] words = rawForm.split("\\s+");
-        StringBuilder normalized = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         
-        for (String word : words) {
+        for (int i = words.length - 1; i >= 0; i--) {
+            String word = words[i];
             if (word.length() == 1 && (word.equals("W") || word.equals("L") || word.equals("D"))) {
-                if (!normalized.isEmpty()) {
-                    normalized.append(' ');
+                if (result.length() > 0) {
+                    result.append(' ');
                 }
-                normalized.append(word);
+                result.append(word);
             }
         }
         
-        return normalized.toString();
+        return result.toString();
     }
 }
