@@ -20,13 +20,15 @@ public class EuropeCalculationService {
     private final MemoryCache memoryCache;
     private final RedisCacheManager redisCacheManager;
 
-    public Answer calculateAnswer(String homeTeam, String awayTeam, String language) {
-        TeamScoreEntry homeTeamScoreEntry = memoryCache.getTeamScoreEntry(homeTeam);
-        LeagueEnum leagueEnum = homeTeamScoreEntry.getLeagueEnum();
-        TeamScoreEntry awayTeamScoreEntry = memoryCache.getTeamScoreEntry(awayTeam);
-
-        if (leagueEnum != awayTeamScoreEntry.getLeagueEnum()) {
-            throw new IllegalArgumentException("Teams are not in the same league");
+    public Answer calculateAnswer(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
+        TeamScoreEntry homeTeamScoreEntry = memoryCache.getTeamScoreEntry(homeTeam, leagueEnum);
+        if (homeTeamScoreEntry == null) {
+            throw new IllegalArgumentException("Home team '" + homeTeam + "' not found in league '" + leagueEnum + "'");
+        }
+        
+        TeamScoreEntry awayTeamScoreEntry = memoryCache.getTeamScoreEntry(awayTeam, leagueEnum);
+        if (awayTeamScoreEntry == null) {
+            throw new IllegalArgumentException("Away team '" + awayTeam + "' not found in league '" + leagueEnum + "'");
         }
 
         Answer answer = openAiService.getAnswer(homeTeam, awayTeam, language, "", leagueEnum);
@@ -35,13 +37,15 @@ public class EuropeCalculationService {
     }
 
 
-    public TodoPredictionPromptResponse calculateTotoPrediction(String homeTeam, String awayTeam, String language) {
-        TeamScoreEntry homeTeamScoreEntry = memoryCache.getTeamScoreEntry(homeTeam);
-        LeagueEnum leagueEnum = homeTeamScoreEntry.getLeagueEnum();
-        TeamScoreEntry awayTeamScoreEntry = memoryCache.getTeamScoreEntry(awayTeam);
-
-        if (leagueEnum != awayTeamScoreEntry.getLeagueEnum()) {
-            throw new IllegalArgumentException("Teams are not in the same league");
+    public TodoPredictionPromptResponse calculateTotoPrediction(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
+        TeamScoreEntry homeTeamScoreEntry = memoryCache.getTeamScoreEntry(homeTeam, leagueEnum);
+        if (homeTeamScoreEntry == null) {
+            throw new IllegalArgumentException("Home team '" + homeTeam + "' not found in league '" + leagueEnum + "'");
+        }
+        
+        TeamScoreEntry awayTeamScoreEntry = memoryCache.getTeamScoreEntry(awayTeam, leagueEnum);
+        if (awayTeamScoreEntry == null) {
+            throw new IllegalArgumentException("Away team '" + awayTeam + "' not found in league '" + leagueEnum + "'");
         }
         Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(homeTeam, awayTeam, language);
             if (cachedResponse.isPresent()) {

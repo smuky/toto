@@ -22,22 +22,24 @@ public class BbcClient {
         List<TeamScoreEntry> tableEntries = new ArrayList<>();
 
         String url = buildUrl(leagueType);
+        String leagueName = extractLeagueNameFromUrl(leagueType.getBbcClientsuffix());
+        
         // Fetch the page
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .timeout(10000)
                 .get();
 
-        // BBC uses dynamic CSS classes - find the first table (Premier League is typically first)
+        // BBC uses dynamic CSS classes - find tables
         Elements tables = doc.select("table");
         if (tables.isEmpty()) {
             throw new IOException("No tables found on the page");
         }
         
-        // Get the first table (Premier League) and its rows
-        Element leagueTable = tables.first();
+        // If URL contains #<leagueName>, find the specific table by league name
+        Element leagueTable = findLeagueTable(tables, leagueName);
         if (leagueTable == null) {
-            throw new IOException("No tables found on the page");
+            throw new IOException("No matching table found on the page for league: " + leagueName);
         }
         Elements tableRows = leagueTable.select("tbody tr");
 
@@ -91,7 +93,40 @@ public class BbcClient {
     }
 
     private String buildUrl(EuropeLeagueType leagueType) {
-        return BBC_BASE_URL + leagueType.getBbcClientsuffix();
+        String suffix = leagueType.getBbcClientsuffix();
+        // Remove the fragment part (#<leagueName>) from the URL as browsers don't send it to the server
+        String urlSuffix = suffix.contains("#") ? suffix.substring(0, suffix.indexOf("#")) : suffix;
+        return BBC_BASE_URL + urlSuffix;
+    }
+
+    private String extractLeagueNameFromUrl(String urlSuffix) {
+        // Extract league name from URL fragment (e.g., "tables#Championship" -> "Championship")
+        if (urlSuffix.contains("#")) {
+            return urlSuffix.substring(urlSuffix.indexOf("#") + 1);
+        }
+        return null;
+    }
+
+    private Element findLeagueTable(Elements tables, String leagueName) {
+        // If no league name specified (no # in URL), return the first table
+        if (leagueName == null) {
+            return tables.first();
+        }
+        
+        // The page uses tabs with anchor links. Find the content associated with the tab.
+        // Look for an element with id matching the league name (the anchor target)
+        Element tabContent = tables.first().ownerDocument().getElementById(leagueName);
+        if (tabContent != null) {
+            // Find the table within or after this element
+            Element table = tabContent.selectFirst("table");
+            if (table != null) {
+                log.debug("Found table for league '{}' by tab content id", leagueName);
+                return table;
+            }
+        }
+        // If no match found, log warning and return first table as fallback
+        log.warn("Could not find table matching league name '{}', using first table as fallback", leagueName);
+        return tables.first();
     }
 
     private String extractTeamName(Element row) {

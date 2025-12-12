@@ -1,6 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.SupportedLanguageEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +33,9 @@ public interface CalculationApi {
             @Parameter(description = "Away team name", required = true)
             @RequestParam("away-team") String awayTeam,
             @Parameter(description = "Language")
-            @RequestParam("language") String language
+            @RequestParam("language") String language,
+            @Parameter(description = "League", required = true)
+            @RequestParam("league") LeagueEnum league
     );
 
     @Operation(
@@ -51,6 +54,8 @@ public interface CalculationApi {
             @Parameter(description = "Away team name", required = true)
             @RequestParam("away-team") String awayTeam,
             @Parameter(description = "Language for analysis text (default: hebrew)")
-            @RequestParam(value = "language", defaultValue = "hebrew") SupportedLanguageEnum language
+            @RequestParam(value = "language", defaultValue = "hebrew") SupportedLanguageEnum language,
+            @Parameter(description = "League", required = true)
+            @RequestParam("league") LeagueEnum league
     );
 }

@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.SupportedLanguageEnum;
 import com.muky.toto.service.EuropeCalculationService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +20,13 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<String> calculateOdds(String homeTeam, String awayTeam, String language) {
-        log.info("calculateOdds: homeTeam={}, awayTeam={}, language={}", homeTeam, awayTeam, language);
+    public ResponseEntity<String> calculateOdds(String homeTeam, String awayTeam, String language, LeagueEnum league) {
+        log.info("calculateOdds: homeTeam={}, awayTeam={}, language={}, league={}", homeTeam, awayTeam, language, league);
         try {
             if (language == null) {
-                language = "hebrew";
+                language = "english";
             }
-            Answer answer = europeCalculationService.calculateAnswer(homeTeam, awayTeam, language);
+            Answer answer = europeCalculationService.calculateAnswer(homeTeam, awayTeam, language, league);
             return ResponseEntity.ok(answer.answer());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -33,13 +34,13 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, SupportedLanguageEnum language) {
-        log.info("calculatePrediction: homeTeam={}, awayTeam={}, language={}", homeTeam, awayTeam, language);
+    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, SupportedLanguageEnum language, LeagueEnum league) {
+        log.info("calculatePrediction: homeTeam={}, awayTeam={}, language={}, league={}", homeTeam, awayTeam, language, league);
         try {
             if (language == null) {
                 language = SupportedLanguageEnum.EN;
             }
-            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language.getLanguage());
+            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language.getLanguage(), league);
             return ResponseEntity.ok(todoPredictionPromptResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
