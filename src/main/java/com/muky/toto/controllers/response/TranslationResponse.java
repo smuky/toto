@@ -9,6 +9,7 @@ public record TranslationResponse(
         Map<String, String> languageTranslations,
         String selectLeague,
         String settings,
-        String about
+        String about,
+        String draw
 ) {
 }

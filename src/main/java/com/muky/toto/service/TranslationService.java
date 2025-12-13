@@ -45,13 +45,15 @@ public class TranslationService {
         String selectLeague = translate("select.league", language);
         String settings = translate("settings", language);
         String about = translate("about", language);
+        String draw = translate("draw", language);
 
         return new TranslationResponse(
                 leagueTranslations,
                 languageTranslations,
                 selectLeague,
                 settings,
-                about
+                about,
+                draw
         );
     }
 }
