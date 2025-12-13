@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @RequestMapping("/cache")
 @Tag(name = "Cache", description = "Redis cache management APIs")
@@ -27,7 +31,7 @@ public interface CacheApi {
     @GetMapping("")
     ResponseEntity<String> get(
             @Parameter(description = "Cache key", required = true)
-            @RequestParam String key);
+            @RequestParam String key) throws IOException;
 
     @Operation(
             summary = "Set value in cache",
@@ -42,7 +46,7 @@ public interface CacheApi {
             @Parameter(description = "Cache key", required = true)
             @RequestParam String key,
             @Parameter(description = "Cache value", required = true)
-            @RequestParam String value);
+            @RequestParam String value) throws IOException;
 
     @Operation(
             summary = "Delete key from cache",
@@ -67,4 +71,22 @@ public interface CacheApi {
     })
     @DeleteMapping("/all")
     ResponseEntity<String> deleteAll();
+
+    @Operation(
+            summary = "Get prediction from cache",
+            description = "Retrieves a cached prediction for a match between two teams in a specific language"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved prediction from cache"),
+            @ApiResponse(responseCode = "404", description = "Prediction not found in cache"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/prediction")
+    ResponseEntity<Optional<TodoPredictionPromptResponse>> getPrediction(
+            @Parameter(description = "First team name", required = true)
+            @RequestParam String team1,
+            @Parameter(description = "Second team name", required = true)
+            @RequestParam String team2,
+            @Parameter(description = "Language code", required = true)
+            @RequestParam String lang);
 }
