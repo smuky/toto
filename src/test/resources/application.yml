@@ -21,6 +21,8 @@ redis:
   expire-seconds: 86400
 
 app:
+  api-football:
+    api-key: test-api-football-key
   league:
     israel:
       season_id: 27

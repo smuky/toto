@@ -24,6 +24,8 @@ redis:
 
 
 app:
+  api-football:
+    api-key: ${API_FOOTBALL_KEY}
   league:
     israel:
       season_id: 27
