@@ -33,21 +33,27 @@ public class ApiFootballAdapter {
         return response.getResponse();
     }
 
-    public ApiFootballResponse<Standing> parseStandingsResponse(JsonNode jsonNode) {
+    public Standing parseStandingsResponse(JsonNode jsonNode) {
         try {
-            return objectMapper.convertValue(
+            ApiFootballResponse<Standing> apiResponse = objectMapper.convertValue(
                     jsonNode,
                     new TypeReference<ApiFootballResponse<Standing>>() {}
             );
+            List<Standing> standings = apiResponse.getResponse();
+            if (standings == null || standings.isEmpty()) {
+                throw new RuntimeException("No standings found in response");
+            }
+            Standing standing = standings.get(0);
+
+            List<List<Standing.StandingEntry>> standings1 = standing.getLeague().getStandings();
+            while (standings1.size() > 1) {
+                standings1.removeFirst();
+            }
+            return standing;
         } catch (Exception e) {
             log.error("Failed to parse standings response", e);
             throw new RuntimeException("Failed to parse standings response", e);
         }
-    }
-
-    public List<Standing> parseStandings(JsonNode jsonNode) {
-        ApiFootballResponse<Standing> response = parseStandingsResponse(jsonNode);
-        return response.getResponse();
     }
 
     public byte[] toBytes(JsonNode jsonNode) {
@@ -65,6 +71,23 @@ public class ApiFootballAdapter {
         } catch (Exception e) {
             log.error("Failed to convert bytes to JsonNode", e);
             throw new RuntimeException("Failed to convert bytes to JsonNode", e);
+        }
+    }
+
+    public List<Fixture> parseFixtures(JsonNode jsonNode) {
+        try {
+            ApiFootballResponse<Fixture> apiResponse = objectMapper.convertValue(
+                    jsonNode,
+                    new TypeReference<ApiFootballResponse<Fixture>>() {}
+            );
+            List<Fixture> fixtures = apiResponse.getResponse();
+            if (fixtures == null) {
+                throw new RuntimeException("No fixtures found in response");
+            }
+            return fixtures;
+        } catch (Exception e) {
+            log.error("Failed to parse fixtures response", e);
+            throw new RuntimeException("Failed to parse fixtures response", e);
         }
     }
 }

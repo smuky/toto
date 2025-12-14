@@ -69,14 +69,14 @@ public class RedisCacheManager {
     public Optional<TodoPredictionPromptResponse> getPrediction(String team1, String team2, String lang) {
         log.info("Getting prediction for {} vs {} in {}", team1, team2, lang);
         String key = generateKey(team1, team2, lang);
-        byte[] data = jedis.get(key.getBytes());
-        
-        if (data == null) {
+        Optional<byte[]> bytes = get(key);
+
+        if (!bytes.isPresent()) {
             return Optional.empty();
         }
 
         try {
-            String json = CompressionUtils.decompress(data);
+            String json = CompressionUtils.decompress(bytes.get());
             TodoPredictionPromptResponse response = objectMapper.readValue(json, TodoPredictionPromptResponse.class);
         return Optional.of(response);
         } catch (IOException e) {
@@ -95,7 +95,7 @@ public class RedisCacheManager {
     }
 
     public Long delete(String key) {
-        return jedis.del(key);
+        return jedis.del(key.getBytes());
     }
 
     public String deleteAll() {

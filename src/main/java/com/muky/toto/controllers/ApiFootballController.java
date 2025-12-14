@@ -1,7 +1,9 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
 import com.muky.toto.client.api_football.Standing;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
 import com.muky.toto.service.ApiFootballService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,18 @@ public class ApiFootballController implements ApiFootballApi {
     }
 
     @Override
-    public ResponseEntity<List<Standing>> getIsraelPremierLeagueStandings(int season) {
-        log.info("Getting Israel Premier League standings for season {}", season);
-        List<Standing> standings = apiFootballService.getIsraelPremierLeagueStandings(season);
-        log.info("Retrieved {} standings", standings.size());
+    public ResponseEntity<Standing> getStandings(LeagueEnum leagueEnum) {
+        log.info("Getting Israel Premier League standings for league {}", leagueEnum.name());
+        Standing standings = apiFootballService.getStanding(leagueEnum);
+        log.info("Retrieved standings for league {} : {} ", leagueEnum.name(), standings);
         return ResponseEntity.ok(standings);
+    }
+
+    @Override
+    public ResponseEntity<List<Fixture>> getNextFixtures(LeagueEnum leagueEnum, int next) {
+        log.info("Getting next {} fixtures for league {}", next, leagueEnum.name());
+        List<Fixture> fixtures = apiFootballService.getNextFixtures(leagueEnum, next);
+        log.info("Retrieved {} fixtures for league {}", fixtures.size(), leagueEnum.name());
+        return ResponseEntity.ok(fixtures);
     }
 }

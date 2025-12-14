@@ -5,8 +5,10 @@ import com.muky.toto.client.api_football.ApiFootballAdapter;
 import com.muky.toto.cache.CompressionUtils;
 import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.ApiFootballClient;
+import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
 import com.muky.toto.client.api_football.Standing;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ApiFootballService {
 
+    public static final int DAYS_IN_SECONDS = 60 * 60 * 24;
     private final ApiFootballClient apiFootballClient;
     private final ApiFootballAdapter apiFootballAdapter;
     private final RedisCacheManager redisCacheManager;
@@ -45,7 +48,7 @@ public class ApiFootballService {
             log.info(country.getName() + "leagues: {}", jsonNode);
 
             try {
-                redisCacheManager.set(cacheKey, 60*60*24, jsonNode.toString());
+                redisCacheManager.set(cacheKey, DAYS_IN_SECONDS, jsonNode.toString());
             } catch (IOException e) {
                 log.error("Failed to compress data of getIsraelLeagues", e);
                 throw new RuntimeException(e);
@@ -55,20 +58,38 @@ public class ApiFootballService {
         return leagues;
     }
 
-    public List<Standing> getIsraelPremierLeagueStandings(int season) {
-        int israelPremierLeagueId = 383;
-        JsonNode jsonNode = apiFootballClient.getStandings(israelPremierLeagueId, season);
-        return apiFootballAdapter.parseStandings(jsonNode);
+
+    public Standing getStanding(LeagueEnum leagueEnum) {
+        Standing standings = null;
+        String cacheKey = "standings." + leagueEnum.name();
+        Optional<byte[]> bytes = redisCacheManager.get(cacheKey);
+        if (bytes.isPresent()) {
+            log.info("Using cached value for standings.{}", leagueEnum.name());
+            try {
+                String json = CompressionUtils.decompress(bytes.get());
+                JsonNode jsonNode = objectMapperService.parseJson(json, JsonNode.class);
+                standings = apiFootballAdapter.parseStandingsResponse(jsonNode);
+            } catch (IOException e) {
+                log.error("Failed to extract json from bytes for getStandings", e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            JsonNode jsonNode = apiFootballClient.getStandings(leagueEnum);
+            log.info("{} standings: {}", leagueEnum.name(), jsonNode);
+
+            try {
+                redisCacheManager.set(cacheKey, DAYS_IN_SECONDS, jsonNode.toString());
+            } catch (IOException e) {
+                log.error("Failed to compress data of getStandings", e);
+                throw new RuntimeException(e);
+            }
+            standings = apiFootballAdapter.parseStandingsResponse(jsonNode);
+        }
+        return standings;
     }
 
     public byte[] getIsraelLeaguesAsBytes() {
         JsonNode jsonNode = apiFootballClient.getLeagues("Israel");
-        return apiFootballAdapter.toBytes(jsonNode);
-    }
-
-    public byte[] getIsraelPremierLeagueStandingsAsBytes(int season) {
-        int israelPremierLeagueId = 383;
-        JsonNode jsonNode = apiFootballClient.getStandings(israelPremierLeagueId, season);
         return apiFootballAdapter.toBytes(jsonNode);
     }
 
@@ -77,8 +98,32 @@ public class ApiFootballService {
         return apiFootballAdapter.parseLeagues(jsonNode);
     }
 
-    public List<Standing> parseStandingsFromBytes(byte[] bytes) {
-        JsonNode jsonNode = apiFootballAdapter.fromBytes(bytes);
-        return apiFootballAdapter.parseStandings(jsonNode);
+    public List<Fixture> getNextFixtures(LeagueEnum leagueEnum, int next) {
+        List<Fixture> fixtures = null;
+        String cacheKey = "fixtures." + leagueEnum.name() + ".next." + next;
+        Optional<byte[]> bytes = redisCacheManager.get(cacheKey);
+        if (bytes.isPresent()) {
+            log.info("Using cached value for fixtures.{}.next.{}", leagueEnum.name(), next);
+            try {
+                String json = CompressionUtils.decompress(bytes.get());
+                JsonNode jsonNode = objectMapperService.parseJson(json, JsonNode.class);
+                fixtures = apiFootballAdapter.parseFixtures(jsonNode);
+            } catch (IOException e) {
+                log.error("Failed to extract json from bytes for getNextFixtures", e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            JsonNode jsonNode = apiFootballClient.getNextFixtures(leagueEnum, next);
+            log.info("{} next {} fixtures: {}", leagueEnum.name(), next, jsonNode);
+
+            try {
+                redisCacheManager.set(cacheKey, 60 * 60, jsonNode.toString()); // Cache for 1 hour
+            } catch (IOException e) {
+                log.error("Failed to compress data of getNextFixtures", e);
+                throw new RuntimeException(e);
+            }
+            fixtures = apiFootballAdapter.parseFixtures(jsonNode);
+        }
+        return fixtures;
     }
 }

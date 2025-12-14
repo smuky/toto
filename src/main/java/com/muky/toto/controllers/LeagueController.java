@@ -1,12 +1,11 @@
 package com.muky.toto.controllers;
 
-import com.muky.toto.cache.MemoryCache;
-import com.muky.toto.controllers.response.AllTeamsResponse;
 import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
+import com.muky.toto.service.ApiFootballService;
 import com.muky.toto.service.LeagueService;
 import com.muky.toto.service.TranslationService;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +18,10 @@ import java.util.List;
 public class LeagueController implements LeagueApi {
 
     private final LeagueService leagueService;
-    private final MemoryCache memoryCache;
     private final TranslationService translationService;
 
-    public LeagueController(LeagueService leagueService, MemoryCache memoryCache, TranslationService translationService) {
+    public LeagueController(LeagueService leagueService, TranslationService translationService) {
         this.leagueService = leagueService;
-        this.memoryCache = memoryCache;
         this.translationService = translationService;
     }
 
@@ -51,13 +48,10 @@ public class LeagueController implements LeagueApi {
         List<TeamGamesEntry> teamGames = leagueService.getTeamGames(name);
         return ResponseEntity.ok(teamGames);
     }
+
     @Override
-    public ResponseEntity<AllTeamsResponse> getAllTeams(String language) {
-        List<TeamScoreEntry> allTeams = memoryCache.getAllTeams();
+    public ResponseEntity<TranslationResponse> getTranslations(String language) {
         TranslationResponse translations = translationService.getTranslations(language);
-        
-        return ResponseEntity.ok(new AllTeamsResponse(allTeams, translations));
+        return ResponseEntity.ok(translations);
     }
-
-
 }

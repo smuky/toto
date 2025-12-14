@@ -40,7 +40,7 @@ public class CalculationController implements CalculationApi {
             if (language == null) {
                 language = SupportedLanguageEnum.EN;
             }
-            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPrediction(homeTeam, awayTeam, language.getLanguage(), league);
+            TodoPredictionPromptResponse todoPredictionPromptResponse = europeCalculationService.calculateTotoPredictionFromStanding(homeTeam, awayTeam, language.getLanguage(), league);
             return ResponseEntity.ok(todoPredictionPromptResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

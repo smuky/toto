@@ -1,7 +1,9 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
 import com.muky.toto.client.api_football.Standing;
+import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,16 +35,31 @@ public interface ApiFootballApi {
             @RequestParam SupportedCountriesEnum country);
 
     @Operation(
-            summary = "Get Israel Premier League standings",
-            description = "Retrieves standings for Israeli Premier League for a specific season"
+            summary = "Get league standings",
+            description = "Retrieves standings for a specific league"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved standings"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/israel/standings")
-    ResponseEntity<List<Standing>> getIsraelPremierLeagueStandings(
-            @Parameter(description = "Season year (e.g., 2024)", required = true)
-            @RequestParam int season);
+    @GetMapping("/standing")
+    ResponseEntity<Standing> getStandings(
+            @Parameter(description = "League", required = true)
+            @RequestParam LeagueEnum leagueEnum);
+
+    @Operation(
+            summary = "Get next fixtures for a league",
+            description = "Retrieves the next n upcoming fixtures for a specific league (cached for 1 hour)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved fixtures"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/fixtures/next")
+    ResponseEntity<List<Fixture>> getNextFixtures(
+            @Parameter(description = "League", required = true)
+            @RequestParam LeagueEnum leagueEnum,
+            @Parameter(description = "Number of next fixtures to retrieve", required = true)
+            @RequestParam(defaultValue = "10") int next);
 }
 
