@@ -10,6 +10,15 @@ public record TranslationResponse(
         String selectLeague,
         String settings,
         String about,
-        String draw
+        String draw,
+        String vs,
+        String winProbabilities,
+        String predictionJustification,
+        String detailedAnalysis,
+        String recentFormAnalysis,
+        String expectedGoalsAnalysis,
+        String headToHeadSummary,
+        String keyNewsInjuries,
+        String results
 ) {
 }

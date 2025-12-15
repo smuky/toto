@@ -72,6 +72,15 @@ public class TranslationService {
         String settings = translate("settings", language);
         String about = translate("about", language);
         String draw = translate("draw", language);
+        String vs = translate("vs", language);
+        String winProbabilities = translate("winProbabilities", language);
+        String predictionJustification = translate("predictionJustification", language);
+        String detailedAnalysis = translate("detailedAnalysis", language);
+        String recentFormAnalysis = translate("recentFormAnalysis", language);
+        String expectedGoalsAnalysis = translate("expectedGoalsAnalysis", language);
+        String headToHeadSummary = translate("headToHeadSummary", language);
+        String keyNewsInjuries = translate("keyNewsInjuries", language);
+        String results = translate("results", language);
 
         return new TranslationResponse(
                 leagueTranslations,
@@ -79,7 +88,16 @@ public class TranslationService {
                 selectLeague,
                 settings,
                 about,
-                draw
+                draw,
+                vs,
+                winProbabilities,
+                predictionJustification,
+                detailedAnalysis,
+                recentFormAnalysis,
+                expectedGoalsAnalysis,
+                headToHeadSummary,
+                keyNewsInjuries,
+                results
         );
     }
 }
