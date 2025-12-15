@@ -2,7 +2,9 @@ package com.muky.toto.service;
 
 import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.model.LeagueEnum;
+import com.muky.toto.model.TeamTranslationMapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TranslationService {
@@ -24,6 +27,29 @@ public class TranslationService {
 
     public String getLeagueName(LeagueEnum league, String language) {
         return translate(league.getTranslationKey(), language);
+    }
+    
+    /**
+     * Get translated team name by team ID
+     * @param teamId API-Football team ID
+     * @param originalName Original team name from API-Football (fallback)
+     * @param language Language code (e.g., "en", "he")
+     * @return Translated team name or original name if translation not found
+     */
+    public String getTeamName(int teamId, String originalName, String language) {
+        String translationKey = TeamTranslationMapping.getTranslationKey(teamId);
+        
+        if (translationKey != null) {
+            try {
+                return translate(translationKey, language);
+            } catch (Exception e) {
+                log.warn("Translation not found for key: {} in language: {}, using original name", translationKey, language);
+                return originalName;
+            }
+        }
+        
+        // No translation mapping exists, return original name
+        return originalName;
     }
 
     public TranslationResponse getTranslations(String language) {

@@ -6,6 +6,7 @@ import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
 import com.muky.toto.service.ApiFootballService;
+import com.muky.toto.service.TranslationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ApiFootballController implements ApiFootballApi {
 
     private final ApiFootballService apiFootballService;
+    private final TranslationService translationService;
 
     @Override
     public ResponseEntity<List<League>> getLeagues(SupportedCountriesEnum country) {
@@ -30,11 +32,12 @@ public class ApiFootballController implements ApiFootballApi {
 
     @Override
     public ResponseEntity<Standing> getStandings(LeagueEnum leagueEnum, String language) {
-        // Extract language code from Accept-Language header (e.g., "en-US" -> "en", "he-IL" -> "he")
-        String languageCode = language.split("[_-]")[0];
-        log.info("Getting standings for league {} with language: {} (extracted: {})", leagueEnum.name(), language, languageCode);
+        log.info("Getting standings for league {} with language: {} ", leagueEnum.name(), language);
         Standing standings = apiFootballService.getStanding(leagueEnum);
-        log.info("Retrieved standings for league {} : {} ", leagueEnum.name(), standings);
+
+        populateTeamDisplayNames(standings, language);
+
+        log.info("Retrieved standings for league {} with language: {}", leagueEnum.name(), language);
         return ResponseEntity.ok(standings);
     }
 
@@ -44,5 +47,24 @@ public class ApiFootballController implements ApiFootballApi {
         List<Fixture> fixtures = apiFootballService.getNextFixtures(leagueEnum, next);
         log.info("Retrieved {} fixtures for league {}", fixtures.size(), leagueEnum.name());
         return ResponseEntity.ok(fixtures);
+    }
+
+    private void populateTeamDisplayNames(Standing standings, String languageCode) {
+        if (standings != null && standings.getLeague() != null && standings.getLeague().getStandings() != null) {
+            standings.getLeague().getStandings().forEach(standingList ->
+                standingList.forEach(entry -> {
+                    Standing.Team team = entry.getTeam();
+                    if (team != null) {
+                        String translatedName = translationService.getTeamName(
+                            team.getId(),
+                            team.getName(),
+                            languageCode
+                        );
+                        team.setDisplayName(translatedName);
+                        log.debug("Set displayName for team ID {}: {}", team.getId(), translatedName);
+                    }
+                })
+            );
+        }
     }
 }

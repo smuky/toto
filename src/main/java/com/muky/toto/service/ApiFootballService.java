@@ -58,6 +58,14 @@ public class ApiFootballService {
         return leagues;
     }
 
+    public List<Standing.StandingEntry> getStandingEntries(int teamId1, int teamId2, LeagueEnum leagueEnum) {
+        Standing standing = getStanding(leagueEnum);
+        List<List<Standing.StandingEntry>> standings = standing.getLeague().getStandings();
+        return standings.stream()
+                .flatMap(List::stream)
+                .filter(entry -> entry.getTeam().getId() == teamId1 || entry.getTeam().getId() == teamId2)
+                .toList();
+    }
 
     public Standing getStanding(LeagueEnum leagueEnum) {
         Standing standings = null;

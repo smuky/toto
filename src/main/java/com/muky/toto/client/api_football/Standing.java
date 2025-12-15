@@ -46,6 +46,7 @@ public class Standing {
         private int id;
         private String name;
         private String logo;
+        private String displayName; // Translated team name based on language
     }
 
     @Data
