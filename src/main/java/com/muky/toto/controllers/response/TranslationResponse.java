@@ -19,6 +19,8 @@ public record TranslationResponse(
         String expectedGoalsAnalysis,
         String headToHeadSummary,
         String keyNewsInjuries,
-        String results
+        String results,
+        String customMatch,
+        String upcomingGames
 ) {
 }

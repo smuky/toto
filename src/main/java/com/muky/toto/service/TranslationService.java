@@ -81,6 +81,8 @@ public class TranslationService {
         String headToHeadSummary = translate("headToHeadSummary", language);
         String keyNewsInjuries = translate("keyNewsInjuries", language);
         String results = translate("results", language);
+        String customMatch = translate("customMatch", language);
+        String upcomingGames = translate("upcomingGames", language);
 
         return new TranslationResponse(
                 leagueTranslations,
@@ -97,7 +99,9 @@ public class TranslationService {
                 expectedGoalsAnalysis,
                 headToHeadSummary,
                 keyNewsInjuries,
-                results
+                results,
+                customMatch,
+                upcomingGames
         );
     }
 }
