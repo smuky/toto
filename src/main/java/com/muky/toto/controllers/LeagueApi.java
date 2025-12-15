@@ -6,11 +6,13 @@ import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -79,7 +81,9 @@ public interface LeagueApi {
     })
 
     @GetMapping("/translations")
-    ResponseEntity<TranslationResponse> getTranslations(@RequestParam(defaultValue = "en") String language);
+    ResponseEntity<TranslationResponse> getTranslations(
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')", hidden = true)
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
 
 }
 

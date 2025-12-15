@@ -29,8 +29,10 @@ public class ApiFootballController implements ApiFootballApi {
     }
 
     @Override
-    public ResponseEntity<Standing> getStandings(LeagueEnum leagueEnum) {
-        log.info("Getting Israel Premier League standings for league {}", leagueEnum.name());
+    public ResponseEntity<Standing> getStandings(LeagueEnum leagueEnum, String language) {
+        // Extract language code from Accept-Language header (e.g., "en-US" -> "en", "he-IL" -> "he")
+        String languageCode = language.split("[_-]")[0];
+        log.info("Getting standings for league {} with language: {} (extracted: {})", leagueEnum.name(), language, languageCode);
         Standing standings = apiFootballService.getStanding(leagueEnum);
         log.info("Retrieved standings for league {} : {} ", leagueEnum.name(), standings);
         return ResponseEntity.ok(standings);

@@ -5,7 +5,6 @@ import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
-import com.muky.toto.service.ApiFootballService;
 import com.muky.toto.service.LeagueService;
 import com.muky.toto.service.TranslationService;
 import org.springframework.http.ResponseEntity;
