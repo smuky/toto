@@ -82,7 +82,7 @@ public interface LeagueApi {
 
     @GetMapping("/translations")
     ResponseEntity<TranslationResponse> getTranslations(
-            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')", hidden = true)
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
 
 }

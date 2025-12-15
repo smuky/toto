@@ -47,7 +47,7 @@ public interface ApiFootballApi {
     ResponseEntity<Standing> getStandings(
             @Parameter(description = "League", required = true)
         @RequestParam LeagueEnum leagueEnum,
-            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')", hidden = true)
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
 
     @Operation(
@@ -64,7 +64,7 @@ public interface ApiFootballApi {
             @RequestParam LeagueEnum leagueEnum,
             @Parameter(description = "Number of next fixtures to retrieve", required = true)
             @RequestParam(defaultValue = "10") int next,
-            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')", hidden = true)
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
 }
 
