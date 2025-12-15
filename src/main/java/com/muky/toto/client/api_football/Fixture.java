@@ -77,6 +77,7 @@ public class Fixture {
         private String name;
         private String logo;
         private Boolean winner;
+        private String displayName;
     }
 
     @Data
