@@ -83,6 +83,8 @@ public class TranslationService {
         String results = translate("results", language);
         String customMatch = translate("customMatch", language);
         String upcomingGames = translate("upcomingGames", language);
+        String analyzing = translate("analyzing", language);
+        String analyzeMatch = translate("analyzeMatch", language);
 
         return new TranslationResponse(
                 leagueTranslations,
@@ -101,7 +103,9 @@ public class TranslationService {
                 keyNewsInjuries,
                 results,
                 customMatch,
-                upcomingGames
+                upcomingGames,
+                analyzing,
+                analyzeMatch
         );
     }
 }

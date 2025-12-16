@@ -21,6 +21,8 @@ public record TranslationResponse(
         String keyNewsInjuries,
         String results,
         String customMatch,
-        String upcomingGames
+        String upcomingGames,
+        String analyzing,
+        String analyzeMatch
 ) {
 }
