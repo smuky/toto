@@ -66,5 +66,18 @@ public interface ApiFootballApi {
             @RequestParam(defaultValue = "10") int next,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
+
+    @Operation(
+            summary = "Get predictions for a fixture",
+            description = "Retrieves all available predictions for a specific fixture from API-Football (cached for 24 hours)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved predictions"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/predictions")
+    ResponseEntity<Object> getPredictions(
+            @Parameter(description = "Fixture ID", required = true)
+            @RequestParam int fixture);
 }
 

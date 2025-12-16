@@ -52,6 +52,14 @@ public class ApiFootballController implements ApiFootballApi {
         return ResponseEntity.ok(fixtures);
     }
 
+    @Override
+    public ResponseEntity<Object> getPredictions(int fixture) {
+        log.info("Getting predictions for fixture: {}", fixture);
+        Object predictions = apiFootballService.getPredictions(fixture);
+        log.info("Retrieved predictions for fixture: {}", fixture);
+        return ResponseEntity.ok(predictions);
+    }
+
     private void populateTeamDisplayNames(Standing standings, String languageCode) {
         if (standings != null && standings.getLeague() != null && standings.getLeague().getStandings() != null) {
             standings.getLeague().getStandings().forEach(standingList ->

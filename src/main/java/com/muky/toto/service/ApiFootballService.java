@@ -134,4 +134,31 @@ public class ApiFootballService {
         }
         return fixtures;
     }
+
+    public JsonNode getPredictions(int fixtureId) {
+        JsonNode predictions = null;
+        String cacheKey = "predictions.fixture." + fixtureId;
+        Optional<byte[]> bytes = redisCacheManager.get(cacheKey);
+        if (bytes.isPresent()) {
+            log.info("Using cached value for predictions.fixture.{}", fixtureId);
+            try {
+                String json = CompressionUtils.decompress(bytes.get());
+                predictions = objectMapperService.parseJson(json, JsonNode.class);
+            } catch (IOException e) {
+                log.error("Failed to extract json from bytes for getPredictions", e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            predictions = apiFootballClient.getPredictions(fixtureId);
+            log.info("Predictions for fixture {}: {}", fixtureId, predictions);
+
+            try {
+                redisCacheManager.set(cacheKey, DAYS_IN_SECONDS, predictions.toString()); // Cache for 24 hours
+            } catch (IOException e) {
+                log.error("Failed to compress data of getPredictions", e);
+                throw new RuntimeException(e);
+            }
+        }
+        return predictions;
+    }
 }

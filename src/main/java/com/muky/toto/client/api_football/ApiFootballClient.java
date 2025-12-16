@@ -113,4 +113,31 @@ public class ApiFootballClient {
             throw new RuntimeException("Failed to fetch fixtures", e);
         }
     }
+
+    public JsonNode getPredictions(int fixtureId) {
+        try {
+            String url = BASE_URL + "/predictions?fixture=" + fixtureId;
+            log.info("Fetching predictions for fixture: {}", fixtureId);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header(HEADER_API_KEY, apiKey)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                log.error("Failed to fetch predictions. Status: {}, Body: {}", response.statusCode(), response.body());
+                throw new RuntimeException("API request failed with status: " + response.statusCode());
+            }
+
+            log.debug("Predictions response: {}", response.body());
+            return objectMapper.readTree(response.body());
+
+        } catch (Exception e) {
+            log.error("Error fetching predictions for fixture: {}", fixtureId, e);
+            throw new RuntimeException("Failed to fetch predictions", e);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.muky.toto.controllers;
 
+import com.muky.toto.ai_response.ApiFootballPredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.SupportedLanguageEnum;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -57,5 +59,22 @@ public interface CalculationApi {
             @RequestParam(value = "language", defaultValue = "hebrew") SupportedLanguageEnum language,
             @Parameter(description = "League", required = true)
             @RequestParam("league") LeagueEnum league
+    );
+
+    @Operation(
+            summary = "Get prediction from API-Football fixture",
+            description = "Retrieves predictions from API-Football for a specific fixture and formats them in a readable user-friendly format using AI"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved and formatted prediction"),
+            @ApiResponse(responseCode = "400", description = "Invalid fixture ID"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/prediction-from-fixture")
+    ResponseEntity<ApiFootballPredictionResponse> getPredictionFromApiFootball(
+            @Parameter(description = "Fixture ID from API-Football", required = true)
+            @RequestParam("fixture") int fixtureId,
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     );
 }
