@@ -1,6 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.ai_response.ApiFootballPredictionResponse;
+import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.SupportedLanguageEnum;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @RequestMapping("/calculation")
 @Tag(name = "Calculation", description = "Odds calculation APIs")
@@ -74,6 +77,23 @@ public interface CalculationApi {
     ResponseEntity<ApiFootballPredictionResponse> getPredictionFromApiFootball(
             @Parameter(description = "Fixture ID from API-Football", required = true)
             @RequestParam("fixture") int fixtureId,
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    );
+
+    @Operation(
+            summary = "Get batch predictions for multiple fixtures",
+            description = "Retrieves predictions from API-Football for multiple fixtures and formats them into concise summaries using AI"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved and formatted batch predictions"),
+            @ApiResponse(responseCode = "400", description = "Invalid fixture IDs"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/batch-predictions")
+    ResponseEntity<BatchFixturePredictionResponse> getBatchFixturePredictions(
+            @Parameter(description = "List of fixture IDs from API-Football", required = true)
+            @RequestParam("fixtures") List<Integer> fixtureIds,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     );

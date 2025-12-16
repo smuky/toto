@@ -1,6 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.ai_response.ApiFootballPredictionResponse;
+import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -9,6 +10,8 @@ import com.muky.toto.service.CalculationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -59,6 +62,26 @@ public class CalculationController implements CalculationApi {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             log.error("Error getting prediction for fixture: {}", fixtureId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<BatchFixturePredictionResponse> getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
+        log.info("getBatchFixturePredictions: fixtureIds={}, language={}", fixtureIds, language);
+        try {
+            if (fixtureIds == null || fixtureIds.isEmpty()) {
+                log.error("Fixture IDs list is empty or null");
+                return ResponseEntity.badRequest().build();
+            }
+            
+            BatchFixturePredictionResponse batchPrediction = calculationService.getBatchFixturePredictions(fixtureIds, language);
+            return ResponseEntity.ok(batchPrediction);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid fixture IDs: {}", fixtureIds, e);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error getting batch predictions for fixtures: {}", fixtureIds, e);
             return ResponseEntity.internalServerError().build();
         }
     }

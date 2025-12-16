@@ -1,6 +1,7 @@
 package com.muky.toto.service;
 
 import com.muky.toto.ai_response.ApiFootballPredictionResponse;
+import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -13,4 +14,6 @@ public interface OpenAiService {
                                                                  String extraInput, LeagueEnum leagueEnum);
 
     ApiFootballPredictionResponse getApiFootballPrediction(String apiFootballPredictions, String language);
+
+    BatchFixturePredictionResponse getBatchFixturePredictions(String fixturesPredictions, String language);
 }

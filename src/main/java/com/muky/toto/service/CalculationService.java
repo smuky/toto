@@ -2,6 +2,7 @@ package com.muky.toto.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.muky.toto.ai_response.ApiFootballPredictionResponse;
+import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.Standing;
@@ -11,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -68,5 +71,40 @@ public class CalculationService {
         
         log.info("Successfully generated and cached readable prediction for fixture {} in {}", fixtureId, language);
         return prediction;
+    }
+
+    public BatchFixturePredictionResponse getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
+        log.info("Getting batch predictions for {} fixtures in language {}", fixtureIds.size(), language);
+        
+        StringBuilder allPredictionsBuilder = new StringBuilder();
+        allPredictionsBuilder.append("[");
+        
+        for (int i = 0; i < fixtureIds.size(); i++) {
+            int fixtureId = fixtureIds.get(i);
+            log.info("Fetching prediction data for fixture {}", fixtureId);
+            
+            JsonNode predictions = apiFootballService.getPredictions(fixtureId);
+            
+            if (predictions == null) {
+                log.warn("No predictions found for fixture ID: {}, skipping", fixtureId);
+                continue;
+            }
+            
+            allPredictionsBuilder.append(predictions.toString());
+            
+            if (i < fixtureIds.size() - 1) {
+                allPredictionsBuilder.append(",");
+            }
+        }
+        
+        allPredictionsBuilder.append("]");
+        
+        String allPredictionsJson = allPredictionsBuilder.toString();
+        log.debug("Combined predictions JSON for {} fixtures", fixtureIds.size());
+        
+        BatchFixturePredictionResponse batchPrediction = openAiService.getBatchFixturePredictions(allPredictionsJson, language);
+        
+        log.info("Successfully generated batch predictions for {} fixtures in {}", fixtureIds.size(), language);
+        return batchPrediction;
     }
 }

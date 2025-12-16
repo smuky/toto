@@ -1,6 +1,7 @@
 package com.muky.toto.service;
 
 import com.muky.toto.ai_response.ApiFootballPredictionResponse;
+import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -24,6 +25,11 @@ public class OpenAiServiceImpl implements OpenAiService {
 
     @Override
     public ApiFootballPredictionResponse getApiFootballPrediction(String apiFootballPredictions, String language) {
+        return null;
+    }
+
+    @Override
+    public BatchFixturePredictionResponse getBatchFixturePredictions(String fixturesPredictions, String language) {
         return null;
     }
 }
