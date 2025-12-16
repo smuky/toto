@@ -20,7 +20,12 @@ redis:
   password: test-password
   expire-seconds: 86400
 
+feedback:
+  recipient:
+    email: test@example.com
+
 app:
+  min-version: 1.0.0+25
   api-football:
     api-key: test-api-football-key
   league:

@@ -1,4 +1,4 @@
-package com.muky.toto.model;
+package com.muky.toto.controllers.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
