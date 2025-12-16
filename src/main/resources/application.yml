@@ -13,6 +13,21 @@ spring:
           max-tokens: 2000
       embedding:
         enabled: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aifootballpredictor@gmail.com
+    password: ${GMAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 redis:
   host: ${REDIS_HOST:redis-18068.c83.us-east-1-2.ec2.cloud.redislabs.com}
@@ -20,8 +35,9 @@ redis:
   password: ${REDIS_PASSWORD}
   expire-seconds: ${REDIS_EXPIRE_SECONDS:86400}
 
-
-
+feedback:
+  recipient:
+    email: aifootballpredictor@gmail.com
 
 app:
   api-football:
