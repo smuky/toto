@@ -83,6 +83,16 @@ public class TranslationService {
         String results = translate("results", language);
         String customMatch = translate("customMatch", language);
         String upcomingGames = translate("upcomingGames", language);
+        String analyzing = translate("analyzing", language);
+        String analyzeMatch = translate("analyzeMatch", language);
+        String termsOfUseTitle = translate("terms_of_use.title", language);
+        String termsOfUseHeader = translate("terms_of_use.header", language);
+        String termsOfUseStatisticalInfo = translate("terms_of_use.statistical_info", language);
+        String termsOfUseNotGambling = translate("terms_of_use.not_gambling", language);
+        String termsOfUseAgeRequirement = translate("terms_of_use.age_requirement", language);
+        String termsOfUseNoResponsibility = translate("terms_of_use.no_responsibility", language);
+        String termsOfUseReadPolicy = translate("terms_of_use.read_policy", language);
+        String termsOfUseAgreeContinue = translate("terms_of_use.agree_continue", language);
 
         return new TranslationResponse(
                 leagueTranslations,
@@ -101,7 +111,17 @@ public class TranslationService {
                 keyNewsInjuries,
                 results,
                 customMatch,
-                upcomingGames
+                upcomingGames,
+                analyzing,
+                analyzeMatch,
+                termsOfUseTitle,
+                termsOfUseHeader,
+                termsOfUseStatisticalInfo,
+                termsOfUseNotGambling,
+                termsOfUseAgeRequirement,
+                termsOfUseNoResponsibility,
+                termsOfUseReadPolicy,
+                termsOfUseAgreeContinue
         );
     }
 }

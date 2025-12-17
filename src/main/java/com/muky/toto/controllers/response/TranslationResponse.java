@@ -21,6 +21,16 @@ public record TranslationResponse(
         String keyNewsInjuries,
         String results,
         String customMatch,
-        String upcomingGames
+        String upcomingGames,
+        String analyzing,
+        String analyzeMatch,
+        String termsOfUseTitle,
+        String termsOfUseHeader,
+        String termsOfUseStatisticalInfo,
+        String termsOfUseNotGambling,
+        String termsOfUseAgeRequirement,
+        String termsOfUseNoResponsibility,
+        String termsOfUseReadPolicy,
+        String termsOfUseAgreeContinue
 ) {
 }
