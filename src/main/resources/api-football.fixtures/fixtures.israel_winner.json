@@ -1,0 +1,702 @@
+[
+  {
+    "fixture": {
+      "id": 1389692,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-20T13:00:00+00:00",
+      "timestamp": 1766235600,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 10592,
+        "name": "Bloomfield Stadium",
+        "city": "Tel-Aviv"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4501,
+        "name": "Hapoel Tel Aviv",
+        "logo": "https://media.api-sports.io/football/teams/4501.png",
+        "winner": null,
+        "displayName": "Hapoel Tel Aviv"
+      },
+      "away": {
+        "id": 6186,
+        "name": "Maccabi Bnei Raina",
+        "logo": "https://media.api-sports.io/football/teams/6186.png",
+        "winner": null,
+        "displayName": "Maccabi Bnei Reineh"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389691,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-20T15:30:00+00:00",
+      "timestamp": 1766244600,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": null,
+        "name": "Teddy Stadium",
+        "city": "Jerusalem"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4486,
+        "name": "Hapoel Katamon",
+        "logo": "https://media.api-sports.io/football/teams/4486.png",
+        "winner": null,
+        "displayName": "Hapoel Jerusalem"
+      },
+      "away": {
+        "id": 2253,
+        "name": "Hapoel Haifa",
+        "logo": "https://media.api-sports.io/football/teams/2253.png",
+        "winner": null,
+        "displayName": "Hapoel Haifa"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389693,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-20T16:30:00+00:00",
+      "timestamp": 1766248200,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 3402,
+        "name": "Doha Stadium",
+        "city": "Sakhnin"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4481,
+        "name": "Bnei Sakhnin",
+        "logo": "https://media.api-sports.io/football/teams/4481.png",
+        "winner": null,
+        "displayName": "Bnei Sakhnin"
+      },
+      "away": {
+        "id": 4507,
+        "name": "Ashdod",
+        "logo": "https://media.api-sports.io/football/teams/4507.png",
+        "winner": null,
+        "displayName": "Maccabi Ashdod"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389694,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-20T16:30:00+00:00",
+      "timestamp": 1766248200,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 3408,
+        "name": "HaMoshava Stadium",
+        "city": "Pétaḥ-Tiqva (Petach-Tikva)"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4488,
+        "name": "Hapoel Petah Tikva",
+        "logo": "https://media.api-sports.io/football/teams/4488.png",
+        "winner": null,
+        "displayName": "Hapoel Petah Tikva"
+      },
+      "away": {
+        "id": 4510,
+        "name": "Ironi Kiryat Shmona",
+        "logo": "https://media.api-sports.io/football/teams/4510.png",
+        "winner": null,
+        "displayName": "Hapoel Kiryat Shmona"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389688,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-20T17:30:00+00:00",
+      "timestamp": 1766251800,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 3407,
+        "name": "Green Stadium",
+        "city": "Nazareth Illit"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 6181,
+        "name": "Ironi Tiberias",
+        "logo": "https://media.api-sports.io/football/teams/6181.png",
+        "winner": null,
+        "displayName": "Ironi Tiberias"
+      },
+      "away": {
+        "id": 563,
+        "name": "Hapoel Beer Sheva",
+        "logo": "https://media.api-sports.io/football/teams/563.png",
+        "winner": null,
+        "displayName": "Hapoel Beer Sheva"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389690,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-21T18:15:00+00:00",
+      "timestamp": 1766340900,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 11941,
+        "name": "Netanya Stadium",
+        "city": "Netanya"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4505,
+        "name": "Maccabi Netanya",
+        "logo": "https://media.api-sports.io/football/teams/4505.png",
+        "winner": null,
+        "displayName": "Maccabi Netanya"
+      },
+      "away": {
+        "id": 604,
+        "name": "Maccabi Tel Aviv",
+        "logo": "https://media.api-sports.io/football/teams/604.png",
+        "winner": null,
+        "displayName": "Maccabi Tel Aviv"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389689,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-22T18:30:00+00:00",
+      "timestamp": 1766428200,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 868,
+        "name": "Sammy Ofer Stadium",
+        "city": "Haifa"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 15"
+    },
+    "teams": {
+      "home": {
+        "id": 4195,
+        "name": "Maccabi Haifa",
+        "logo": "https://media.api-sports.io/football/teams/4195.png",
+        "winner": null,
+        "displayName": "Maccabi Haifa"
+      },
+      "away": {
+        "id": 657,
+        "name": "Beitar Jerusalem",
+        "logo": "https://media.api-sports.io/football/teams/657.png",
+        "winner": null,
+        "displayName": "Beitar Jerusalem"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389701,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-30T17:00:00+00:00",
+      "timestamp": 1767114000,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": null,
+        "name": "Green Stadium",
+        "city": "Nof HaGalil"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 16"
+    },
+    "teams": {
+      "home": {
+        "id": 6186,
+        "name": "Maccabi Bnei Raina",
+        "logo": "https://media.api-sports.io/football/teams/6186.png",
+        "winner": null,
+        "displayName": "Maccabi Bnei Reineh"
+      },
+      "away": {
+        "id": 4510,
+        "name": "Ironi Kiryat Shmona",
+        "logo": "https://media.api-sports.io/football/teams/4510.png",
+        "winner": null,
+        "displayName": "Hapoel Kiryat Shmona"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389699,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-30T17:30:00+00:00",
+      "timestamp": 1767115800,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 868,
+        "name": "Sammy Ofer Stadium",
+        "city": "Haifa"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 16"
+    },
+    "teams": {
+      "home": {
+        "id": 2253,
+        "name": "Hapoel Haifa",
+        "logo": "https://media.api-sports.io/football/teams/2253.png",
+        "winner": null,
+        "displayName": "Hapoel Haifa"
+      },
+      "away": {
+        "id": 4481,
+        "name": "Bnei Sakhnin",
+        "logo": "https://media.api-sports.io/football/teams/4481.png",
+        "winner": null,
+        "displayName": "Bnei Sakhnin"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  },
+  {
+    "fixture": {
+      "id": 1389696,
+      "referee": null,
+      "timezone": "UTC",
+      "date": "2025-12-30T18:00:00+00:00",
+      "timestamp": 1767117600,
+      "periods": {
+        "first": null,
+        "second": null
+      },
+      "venue": {
+        "id": 10592,
+        "name": "Bloomfield Stadium",
+        "city": "Tel-Aviv"
+      },
+      "status": {
+        "elapsed": null,
+        "long": "Not Started",
+        "short": "NS"
+      }
+    },
+    "league": {
+      "id": 383,
+      "name": "Ligat Ha'al",
+      "country": "Israel",
+      "logo": "https://media.api-sports.io/football/leagues/383.png",
+      "flag": "https://media.api-sports.io/flags/il.svg",
+      "season": 2025,
+      "round": "Regular Season - 16"
+    },
+    "teams": {
+      "home": {
+        "id": 604,
+        "name": "Maccabi Tel Aviv",
+        "logo": "https://media.api-sports.io/football/teams/604.png",
+        "winner": null,
+        "displayName": "Maccabi Tel Aviv"
+      },
+      "away": {
+        "id": 6181,
+        "name": "Ironi Tiberias",
+        "logo": "https://media.api-sports.io/football/teams/6181.png",
+        "winner": null,
+        "displayName": "Ironi Tiberias"
+      }
+    },
+    "goals": {
+      "home": null,
+      "away": null
+    },
+    "score": {
+      "halftime": {
+        "home": null,
+        "away": null
+      },
+      "fulltime": {
+        "home": null,
+        "away": null
+      },
+      "extratime": {
+        "home": null,
+        "away": null
+      },
+      "penalty": {
+        "home": null,
+        "away": null
+      }
+    }
+  }
+]

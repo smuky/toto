@@ -113,4 +113,31 @@ public class ApiFootballClient {
             throw new RuntimeException("Failed to fetch fixtures", e);
         }
     }
+
+    public JsonNode getHeadToHead(String h2h) {
+        try {
+            String url = BASE_URL + "/fixtures/headtohead?h2h=" + h2h;
+            log.info("Fetching head-to-head fixtures for: {}", h2h);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header(HEADER_API_KEY, apiKey)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                log.error("Failed to fetch head-to-head fixtures. Status: {}, Body: {}", response.statusCode(), response.body());
+                throw new RuntimeException("API request failed with status: " + response.statusCode());
+            }
+
+            log.debug("Head-to-head response: {}", response.body());
+            return objectMapper.readTree(response.body());
+
+        } catch (Exception e) {
+            log.error("Error fetching head-to-head fixtures for: {}", h2h, e);
+            throw new RuntimeException("Failed to fetch head-to-head fixtures", e);
+        }
+    }
 }
