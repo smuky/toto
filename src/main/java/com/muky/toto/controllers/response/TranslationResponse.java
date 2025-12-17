@@ -23,6 +23,14 @@ public record TranslationResponse(
         String customMatch,
         String upcomingGames,
         String analyzing,
-        String analyzeMatch
+        String analyzeMatch,
+        String termsOfUseTitle,
+        String termsOfUseHeader,
+        String termsOfUseStatisticalInfo,
+        String termsOfUseNotGambling,
+        String termsOfUseAgeRequirement,
+        String termsOfUseNoResponsibility,
+        String termsOfUseReadPolicy,
+        String termsOfUseAgreeContinue
 ) {
 }
