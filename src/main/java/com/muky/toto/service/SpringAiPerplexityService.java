@@ -4,6 +4,7 @@ import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
+import com.muky.toto.client.api_football.prediction.MatchAnalysisData;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.TeamScoreEntry;
@@ -41,6 +42,9 @@ public class SpringAiPerplexityService implements OpenAiService {
 
     @Value("classpath:/templates/BatchFixturePredictionPrompt.st")
     private Resource batchFixturePredictionTemplate;
+
+    @Value("classpath:/templates/CleanMatchPredictionPrompt.st")
+    private Resource cleanMatchPredictionTemplate;
 
     @Override
     public Answer getAnswer(String team1, String team2, String language, String extraInput, LeagueEnum leagueEnum) {
@@ -156,6 +160,52 @@ public class SpringAiPerplexityService implements OpenAiService {
         try {
             TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
             log.info("Generated API-Football prediction in {}", language);
+            return prediction;
+        } catch (Exception e) {
+            log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);
+            throw new RuntimeException("Failed to parse AI response - response may be malformed", e);
+        }
+    }
+
+    @Override
+    public TodoPredictionPromptResponse getCleanMatchPrediction(MatchAnalysisData matchData, String language) {
+        BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
+        String formatInstructions = converter.getFormat();
+
+        PromptTemplate promptTemplate = new PromptTemplate(cleanMatchPredictionTemplate);
+        Prompt prompt = promptTemplate.create(Map.of(
+                "matchData", matchData,
+                "language", language,
+                "format", formatInstructions
+        ));
+
+        log.info("Calling AI with clean MatchAnalysisData for teams: {} vs {} in language: {}", 
+                matchData.getHomeTeam().getName(), 
+                matchData.getAwayTeam().getName(), 
+                language);
+
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .temperature(0.3)
+                .maxTokens(4000)
+                .build();
+
+        Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
+        ChatResponse response = chatModel.call(promptWithOptions);
+
+        String rawResponse = response.getResult().getOutput().getText();
+        String finishReason = response.getResult().getMetadata().getFinishReason();
+
+        log.debug("Raw AI response: {}", rawResponse);
+        log.debug("AI finish reason: {}", finishReason);
+
+        if ("length".equals(finishReason)) {
+            log.error("AI response was truncated due to token limit (maxTokens=3500). Response length: {} chars", rawResponse.length());
+            throw new RuntimeException("AI response was truncated. Please simplify the prompt or increase maxTokens.");
+        }
+
+        try {
+            TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
+            log.info("Generated match prediction using clean objective data in {}", language);
             return prediction;
         } catch (Exception e) {
             log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);

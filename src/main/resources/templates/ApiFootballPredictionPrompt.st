@@ -10,7 +10,7 @@ Input:
 instructions on the data:
 For each team:
 - the "form" is from the oldest game to the most recent game. L=Lost, D=Draw, W=Win
-- the "fixtures tell how much games the team as played and you can tell where is is stronger.
+- the "fixtures tell how much games the team as played and you can tell where is is stronger.é
 
 Goal:
 Predict probabilities for 1/X/2 (sum = 100%) with data-driven analysis, justify your predictions.

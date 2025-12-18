@@ -4,6 +4,8 @@ import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
+import com.muky.toto.client.api_football.mapper.MatchAnalysisMapper;
+import com.muky.toto.client.api_football.prediction.MatchAnalysisData;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class CalculationService {
     private final OpenAiService openAiService;
     private final RedisCacheManager redisCacheManager;
     private final ApiFootballService apiFootballService;
+    private final MatchAnalysisMapper matchAnalysisMapper;
 
     public Answer calculateAnswer(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
         Answer answer = openAiService.getAnswer(homeTeam, awayTeam, language, "", leagueEnum);
@@ -54,17 +57,17 @@ public class CalculationService {
         }
 
         Prediction predictions = apiFootballService.getPredictions(fixtureId);
-        Prediction.PredictionDetails predictionDetails = new Prediction.PredictionDetails();
-        predictions.setPredictions(predictionDetails);
 
         if (predictions == null) {
             throw new IllegalArgumentException("No predictions found for fixture ID: " + fixtureId);
         }
+
+        MatchAnalysisData matchAnalysisData = matchAnalysisMapper.toMatchAnalysisData(predictions);
         
         String predictionsJson = predictions.toString();
         log.debug("API-Football predictions JSON: {}", predictionsJson);
 
-        TodoPredictionPromptResponse apiFootballPrediction = openAiService.getApiFootballPrediction(predictions, language);
+        TodoPredictionPromptResponse apiFootballPrediction = openAiService.getCleanMatchPrediction(matchAnalysisData, language);
         redisCacheManager.cacheApiFootballPrediction(fixtureId, language, apiFootballPrediction);
         
         log.info("Successfully generated and cached readable prediction for fixture {} in {}", fixtureId, language);
