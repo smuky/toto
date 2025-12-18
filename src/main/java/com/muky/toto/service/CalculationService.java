@@ -47,7 +47,7 @@ public class CalculationService {
         return todoPredictionPromptResponse;
     }
 
-    public TodoPredictionPromptResponse getPredictionFromApiFootball(int fixtureId, String language) {
+    public TodoPredictionPromptResponse getPredictionFromApiFootball(String team1, String team2, int fixtureId, String language) {
         log.info("Getting prediction for fixture {} in language {}", fixtureId, language);
         
         Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getApiFootballPrediction(fixtureId, language);
@@ -67,7 +67,7 @@ public class CalculationService {
         String predictionsJson = predictions.toString();
         log.debug("API-Football predictions JSON: {}", predictionsJson);
 
-        TodoPredictionPromptResponse apiFootballPrediction = openAiService.getCleanMatchPrediction(matchAnalysisData, language);
+        TodoPredictionPromptResponse apiFootballPrediction = openAiService.getCleanMatchPrediction(team1, team2, matchAnalysisData, language);
         redisCacheManager.cacheApiFootballPrediction(fixtureId, language, apiFootballPrediction);
         
         log.info("Successfully generated and cached readable prediction for fixture {} in {}", fixtureId, language);

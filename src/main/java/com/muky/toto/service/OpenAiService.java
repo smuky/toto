@@ -16,7 +16,7 @@ public interface OpenAiService {
 
     TodoPredictionPromptResponse getApiFootballPrediction(Prediction predictions, String language);
 
-    TodoPredictionPromptResponse getCleanMatchPrediction(MatchAnalysisData matchData, String language);
+    TodoPredictionPromptResponse getCleanMatchPrediction(String team1, String team2, MatchAnalysisData matchData, String language);
 
     BatchFixturePredictionResponse getBatchFixturePredictions(String fixturesPredictions, String language);
 }

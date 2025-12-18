@@ -73,7 +73,6 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(1359, "team.luton");
         TEAM_ID_TO_TRANSLATION_KEY.put(57, "team.ipswich");
         TEAM_ID_TO_TRANSLATION_KEY.put(1346, "team.middlesbrough");
-        TEAM_ID_TO_TRANSLATION_KEY.put(64, "team.stoke");
         TEAM_ID_TO_TRANSLATION_KEY.put(61, "team.preston");
         TEAM_ID_TO_TRANSLATION_KEY.put(59, "team.millwall");
         TEAM_ID_TO_TRANSLATION_KEY.put(1345, "team.coventry");
@@ -93,7 +92,13 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(1338, "team.oxford_united");
         TEAM_ID_TO_TRANSLATION_KEY.put(71, "team.norwich");
         TEAM_ID_TO_TRANSLATION_KEY.put(74, "team.sheffield_wednesday");
-        
+
+        TEAM_ID_TO_TRANSLATION_KEY.put(58, "team.millwall");
+        TEAM_ID_TO_TRANSLATION_KEY.put(70, "team.middlesbrough");
+        TEAM_ID_TO_TRANSLATION_KEY.put(64, "team.hull_city");
+        TEAM_ID_TO_TRANSLATION_KEY.put(75, "team.stoke_city");
+
+
         // La Liga teams
         TEAM_ID_TO_TRANSLATION_KEY.put(529, "team.barcelona");
         TEAM_ID_TO_TRANSLATION_KEY.put(541, "team.real_madrid");
