@@ -7,6 +7,7 @@ import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.ApiFootballClient;
 import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
@@ -133,5 +134,32 @@ public class ApiFootballService {
             fixtures = apiFootballAdapter.parseFixtures(jsonNode);
         }
         return fixtures;
+    }
+
+    public Prediction getPredictions(int fixtureId) {
+        JsonNode predictions = null;
+        String cacheKey = "predictions.fixture." + fixtureId;
+        Optional<byte[]> bytes = redisCacheManager.get(cacheKey);
+        if (bytes.isPresent()) {
+            log.info("Using cached value for predictions.fixture.{}", fixtureId);
+            try {
+                String json = CompressionUtils.decompress(bytes.get());
+                predictions = objectMapperService.parseJson(json, JsonNode.class);
+            } catch (IOException e) {
+                log.error("Failed to extract json from bytes for getPredictions", e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            predictions = apiFootballClient.getPredictions(fixtureId);
+            log.info("Predictions for fixture {}: {}", fixtureId, predictions);
+
+            try {
+                redisCacheManager.set(cacheKey, DAYS_IN_SECONDS, predictions.toString()); // Cache for 24 hours
+            } catch (IOException e) {
+                log.error("Failed to compress data of getPredictions", e);
+                throw new RuntimeException(e);
+            }
+        }
+        return apiFootballAdapter.parsePrediction(predictions);
     }
 }

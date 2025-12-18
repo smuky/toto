@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
@@ -50,6 +51,14 @@ public class ApiFootballController implements ApiFootballApi {
         
         log.info("Retrieved {} fixtures for league {} with language: {}", fixtures.size(), leagueEnum.name(), language);
         return ResponseEntity.ok(fixtures);
+    }
+
+    @Override
+    public ResponseEntity<Prediction> getPredictions(int fixture) {
+        log.info("Getting predictions for fixture: {}", fixture);
+        Prediction predictions = apiFootballService.getPredictions(fixture);
+        log.info("Retrieved predictions for fixture: {}", fixture);
+        return ResponseEntity.ok(predictions);
     }
 
     private void populateTeamDisplayNames(Standing standings, String languageCode) {

@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
@@ -66,5 +67,18 @@ public interface ApiFootballApi {
             @RequestParam(defaultValue = "10") int next,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
+
+    @Operation(
+            summary = "Get predictions for a fixture",
+            description = "Retrieves all available predictions for a specific fixture from API-Football (cached for 24 hours)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved predictions"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/predictions")
+    ResponseEntity<Prediction> getPredictions(
+            @Parameter(description = "Fixture ID", required = true)
+            @RequestParam int fixture);
 }
 

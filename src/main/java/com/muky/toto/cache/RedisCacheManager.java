@@ -1,5 +1,6 @@
 package com.muky.toto.cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.muky.toto.ai_response.ApiFootballPredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,42 @@ public class RedisCacheManager {
         return Optional.of(response);
         } catch (IOException e) {
             log.error("Redis Cache fail on " + team1 + "." + team2 + "." + lang + "due to: ", e);
+            return Optional.empty();
+        }
+    }
+
+    private String generateFixtureKey(int fixtureId, String lang) {
+        return String.format("fixture:%d.%s", fixtureId, lang);
+    }
+
+    public void cacheApiFootballPrediction(int fixtureId, String lang, TodoPredictionPromptResponse predictionResponse) {
+        String key = generateFixtureKey(fixtureId, lang);
+
+        try {
+            String json = objectMapper.writeValueAsString(predictionResponse);
+            byte[] compressedData = CompressionUtils.compress(json);
+            jedis.setex(key.getBytes(), redisExpireSeconds, compressedData);
+            log.info("Stored API-Football prediction key {}", key);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<TodoPredictionPromptResponse> getApiFootballPrediction(int fixtureId, String lang) {
+        log.info("Getting API-Football prediction for fixture {} in {}", fixtureId, lang);
+        String key = generateFixtureKey(fixtureId, lang);
+        Optional<byte[]> bytes = get(key);
+
+        if (!bytes.isPresent()) {
+            return Optional.empty();
+        }
+
+        try {
+            String json = CompressionUtils.decompress(bytes.get());
+            TodoPredictionPromptResponse response = objectMapper.readValue(json, TodoPredictionPromptResponse.class);
+            return Optional.of(response);
+        } catch (IOException e) {
+            log.error("Redis Cache fail on fixture {} in {} due to: ", fixtureId, lang, e);
             return Optional.empty();
         }
     }
