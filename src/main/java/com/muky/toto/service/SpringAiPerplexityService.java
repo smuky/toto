@@ -1,8 +1,8 @@
 package com.muky.toto.service;
 
-import com.muky.toto.ai_response.ApiFootballPredictionResponse;
 import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -118,15 +118,18 @@ public class SpringAiPerplexityService implements OpenAiService {
     }
 
     @Override
-    public ApiFootballPredictionResponse getApiFootballPrediction(String apiFootballPredictions, String language) {
-        BeanOutputConverter<ApiFootballPredictionResponse> converter = new BeanOutputConverter<>(ApiFootballPredictionResponse.class);
+    public TodoPredictionPromptResponse getApiFootballPrediction(Prediction predictions, String language) {
+        BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
         String formatInstructions = converter.getFormat();
 
         PromptTemplate promptTemplate = new PromptTemplate(apiFootballPredictionTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
-                "apiFootballData", apiFootballPredictions,
+                "team1", predictions.getTeams().getHome(),
+                "team2", predictions.getTeams().getAway(),
+                "data", predictions,
                 "language", language,
-                "format", formatInstructions
+                "leagueLanguage", predictions.getLeague().getCountry(),
+                "format", formatInstructions // <--- Pass the instructions here
         ));
 
         log.info("Calling AI to format API-Football predictions in language: {}", language);
@@ -151,7 +154,7 @@ public class SpringAiPerplexityService implements OpenAiService {
         }
 
         try {
-            ApiFootballPredictionResponse prediction = converter.convert(rawResponse);
+            TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
             log.info("Generated API-Football prediction in {}", language);
             return prediction;
         } catch (Exception e) {

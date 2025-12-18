@@ -74,9 +74,9 @@ public interface CalculationApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/prediction-from-fixture")
-    ResponseEntity<ApiFootballPredictionResponse> getPredictionFromApiFootball(
+    ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(
             @Parameter(description = "Fixture ID from API-Football", required = true)
-            @RequestParam("fixture") int fixtureId,
+            @RequestParam("fixtureId") int fixtureId,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     );

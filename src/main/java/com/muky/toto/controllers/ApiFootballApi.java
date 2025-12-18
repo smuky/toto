@@ -2,6 +2,7 @@ package com.muky.toto.controllers;
 
 import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
@@ -76,7 +77,7 @@ public interface ApiFootballApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/predictions")
-    ResponseEntity<Object> getPredictions(
+    ResponseEntity<Prediction> getPredictions(
             @Parameter(description = "Fixture ID", required = true)
             @RequestParam int fixture);
 }

@@ -52,11 +52,14 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<ApiFootballPredictionResponse> getPredictionFromApiFootball(int fixtureId, String language) {
+    public ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(int fixtureId, String language) {
         log.info("getPredictionFromApiFootball: fixtureId={}, language={}", fixtureId, language);
         try {
-            ApiFootballPredictionResponse prediction = calculationService.getPredictionFromApiFootball(fixtureId, language);
-            return ResponseEntity.ok(prediction);
+            if (language == null || language.isEmpty()) {
+                language = "en";
+            }
+            TodoPredictionPromptResponse predictionFromApiFootball = calculationService.getPredictionFromApiFootball(fixtureId, language);
+            return ResponseEntity.ok(predictionFromApiFootball);
         } catch (IllegalArgumentException e) {
             log.error("Invalid fixture ID: {}", fixtureId, e);
             return ResponseEntity.badRequest().build();
@@ -75,8 +78,8 @@ public class CalculationController implements CalculationApi {
                 return ResponseEntity.badRequest().build();
             }
             
-            BatchFixturePredictionResponse batchPrediction = calculationService.getBatchFixturePredictions(fixtureIds, language);
-            return ResponseEntity.ok(batchPrediction);
+            //BatchFixturePredictionResponse batchPrediction = calculationService.getBatchFixturePredictions(fixtureIds, language);
+            return null;
         } catch (IllegalArgumentException e) {
             log.error("Invalid fixture IDs: {}", fixtureIds, e);
             return ResponseEntity.badRequest().build();

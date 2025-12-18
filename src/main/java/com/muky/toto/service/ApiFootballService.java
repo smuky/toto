@@ -7,6 +7,7 @@ import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.ApiFootballClient;
 import com.muky.toto.client.api_football.Fixture;
 import com.muky.toto.client.api_football.League;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
@@ -135,7 +136,7 @@ public class ApiFootballService {
         return fixtures;
     }
 
-    public JsonNode getPredictions(int fixtureId) {
+    public Prediction getPredictions(int fixtureId) {
         JsonNode predictions = null;
         String cacheKey = "predictions.fixture." + fixtureId;
         Optional<byte[]> bytes = redisCacheManager.get(cacheKey);
@@ -159,6 +160,6 @@ public class ApiFootballService {
                 throw new RuntimeException(e);
             }
         }
-        return predictions;
+        return apiFootballAdapter.parsePrediction(predictions);
     }
 }

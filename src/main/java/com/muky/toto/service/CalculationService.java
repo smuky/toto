@@ -1,10 +1,8 @@
 package com.muky.toto.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.muky.toto.ai_response.ApiFootballPredictionResponse;
-import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.cache.RedisCacheManager;
+import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
@@ -12,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -48,32 +44,34 @@ public class CalculationService {
         return todoPredictionPromptResponse;
     }
 
-    public ApiFootballPredictionResponse getPredictionFromApiFootball(int fixtureId, String language) {
+    public TodoPredictionPromptResponse getPredictionFromApiFootball(int fixtureId, String language) {
         log.info("Getting prediction for fixture {} in language {}", fixtureId, language);
         
-        Optional<ApiFootballPredictionResponse> cachedResponse = redisCacheManager.getApiFootballPrediction(fixtureId, language);
+        Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getApiFootballPrediction(fixtureId, language);
         if (cachedResponse.isPresent()) {
             log.info("Found cached API-Football prediction for fixture {} in {}", fixtureId, language);
             return cachedResponse.get();
         }
-        
-        JsonNode predictions = apiFootballService.getPredictions(fixtureId);
-        
+
+        Prediction predictions = apiFootballService.getPredictions(fixtureId);
+        Prediction.PredictionDetails predictionDetails = new Prediction.PredictionDetails();
+        predictions.setPredictions(predictionDetails);
+
         if (predictions == null) {
             throw new IllegalArgumentException("No predictions found for fixture ID: " + fixtureId);
         }
         
         String predictionsJson = predictions.toString();
         log.debug("API-Football predictions JSON: {}", predictionsJson);
-        
-        ApiFootballPredictionResponse prediction = openAiService.getApiFootballPrediction(predictionsJson, language);
-        redisCacheManager.cacheApiFootballPrediction(fixtureId, language, prediction);
+
+        TodoPredictionPromptResponse apiFootballPrediction = openAiService.getApiFootballPrediction(predictions, language);
+        redisCacheManager.cacheApiFootballPrediction(fixtureId, language, apiFootballPrediction);
         
         log.info("Successfully generated and cached readable prediction for fixture {} in {}", fixtureId, language);
-        return prediction;
+        return apiFootballPrediction;
     }
 
-    public BatchFixturePredictionResponse getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
+ /*   public BatchFixturePredictionResponse getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
         log.info("Getting batch predictions for {} fixtures in language {}", fixtureIds.size(), language);
         
         StringBuilder allPredictionsBuilder = new StringBuilder();
@@ -106,5 +104,5 @@ public class CalculationService {
         
         log.info("Successfully generated batch predictions for {} fixtures in {}", fixtureIds.size(), language);
         return batchPrediction;
-    }
+    }*/
 }

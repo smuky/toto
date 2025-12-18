@@ -144,7 +144,7 @@ public class ApiFootballClient {
     public JsonNode getPredictions(int fixtureId) {
         try {
             String url = BASE_URL + "/predictions?fixture=" + fixtureId;
-            log.info("Fetching predictions for fixture: {}", fixtureId);
+            log.info("Fetching predictions for fixture: {}, url: {}", fixtureId, url);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))

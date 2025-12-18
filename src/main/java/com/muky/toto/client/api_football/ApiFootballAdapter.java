@@ -90,4 +90,21 @@ public class ApiFootballAdapter {
             throw new RuntimeException("Failed to parse fixtures response", e);
         }
     }
+
+    public Prediction parsePrediction(JsonNode jsonNode) {
+        try {
+            ApiFootballResponse<Prediction> apiResponse = objectMapper.convertValue(
+                    jsonNode,
+                    new TypeReference<ApiFootballResponse<Prediction>>() {}
+            );
+            List<Prediction> predictions = apiResponse.getResponse();
+            if (predictions == null || predictions.isEmpty()) {
+                throw new RuntimeException("No predictions found in response");
+            }
+            return predictions.get(0);
+        } catch (Exception e) {
+            log.error("Failed to parse prediction response", e);
+            throw new RuntimeException("Failed to parse prediction response", e);
+        }
+    }
 }

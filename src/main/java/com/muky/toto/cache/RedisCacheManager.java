@@ -90,7 +90,7 @@ public class RedisCacheManager {
         return String.format("fixture:%d.%s", fixtureId, lang);
     }
 
-    public void cacheApiFootballPrediction(int fixtureId, String lang, ApiFootballPredictionResponse predictionResponse) {
+    public void cacheApiFootballPrediction(int fixtureId, String lang, TodoPredictionPromptResponse predictionResponse) {
         String key = generateFixtureKey(fixtureId, lang);
 
         try {
@@ -103,7 +103,7 @@ public class RedisCacheManager {
         }
     }
 
-    public Optional<ApiFootballPredictionResponse> getApiFootballPrediction(int fixtureId, String lang) {
+    public Optional<TodoPredictionPromptResponse> getApiFootballPrediction(int fixtureId, String lang) {
         log.info("Getting API-Football prediction for fixture {} in {}", fixtureId, lang);
         String key = generateFixtureKey(fixtureId, lang);
         Optional<byte[]> bytes = get(key);
@@ -114,7 +114,7 @@ public class RedisCacheManager {
 
         try {
             String json = CompressionUtils.decompress(bytes.get());
-            ApiFootballPredictionResponse response = objectMapper.readValue(json, ApiFootballPredictionResponse.class);
+            TodoPredictionPromptResponse response = objectMapper.readValue(json, TodoPredictionPromptResponse.class);
             return Optional.of(response);
         } catch (IOException e) {
             log.error("Redis Cache fail on fixture {} in {} due to: ", fixtureId, lang, e);
