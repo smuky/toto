@@ -75,6 +75,10 @@ public interface CalculationApi {
     })
     @GetMapping("/prediction-from-fixture")
     ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(
+            @Parameter(description = "Home team name", required = true)
+            @RequestParam("home-team") String team1,
+            @Parameter(description = "Away team name", required = true)
+            @RequestParam("away-team") String team2,
             @Parameter(description = "Fixture ID from API-Football", required = true)
             @RequestParam("fixtureId") int fixtureId,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")

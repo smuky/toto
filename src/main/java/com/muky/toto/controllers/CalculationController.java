@@ -52,13 +52,13 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(int fixtureId, String language) {
+    public ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(String homeTeam, String awayTeam, int fixtureId, String language) {
         log.info("getPredictionFromApiFootball: fixtureId={}, language={}", fixtureId, language);
         try {
             if (language == null || language.isEmpty()) {
                 language = "en";
             }
-            TodoPredictionPromptResponse predictionFromApiFootball = calculationService.getPredictionFromApiFootball(fixtureId, language);
+            TodoPredictionPromptResponse predictionFromApiFootball = calculationService.getPredictionFromApiFootball(homeTeam, awayTeam, fixtureId, language);
             return ResponseEntity.ok(predictionFromApiFootball);
         } catch (IllegalArgumentException e) {
             log.error("Invalid fixture ID: {}", fixtureId, e);

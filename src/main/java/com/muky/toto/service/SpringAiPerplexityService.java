@@ -168,12 +168,14 @@ public class SpringAiPerplexityService implements OpenAiService {
     }
 
     @Override
-    public TodoPredictionPromptResponse getCleanMatchPrediction(MatchAnalysisData matchData, String language) {
+    public TodoPredictionPromptResponse getCleanMatchPrediction(String team1, String team2, MatchAnalysisData matchData, String language) {
         BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
         String formatInstructions = converter.getFormat();
 
         PromptTemplate promptTemplate = new PromptTemplate(cleanMatchPredictionTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
+                "team1", team1,
+                "team2", team2,
                 "matchData", matchData,
                 "language", language,
                 "format", formatInstructions

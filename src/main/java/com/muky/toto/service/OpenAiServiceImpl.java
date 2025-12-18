@@ -31,7 +31,7 @@ public class OpenAiServiceImpl implements OpenAiService {
     }
 
     @Override
-    public TodoPredictionPromptResponse getCleanMatchPrediction(MatchAnalysisData matchData, String language) {
+    public TodoPredictionPromptResponse getCleanMatchPrediction(String team1, String team2, MatchAnalysisData matchData, String language) {
         return null;
     }
 
