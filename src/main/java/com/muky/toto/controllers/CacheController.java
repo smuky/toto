@@ -44,9 +44,10 @@ public class CacheController implements CacheApi {
     }
 
     @Override
-    public ResponseEntity<Optional<TodoPredictionPromptResponse>> getPrediction(String team1, String team2, String lang) {
+    public ResponseEntity<Optional<TodoPredictionPromptResponse>> getPrediction(String predictorId, String team1,
+                                                                                String team2, String lang) {
         log.info("Getting prediction for {} vs {} in {}", team1, team2, lang);
-        Optional<TodoPredictionPromptResponse> prediction = redisCacheManager.getPrediction(team1, team2, lang);
+        Optional<TodoPredictionPromptResponse> prediction = redisCacheManager.getPrediction(predictorId, team1, team2, lang);
         log.info("Prediction: {}", prediction);
         return ResponseEntity.ok(prediction);
     }

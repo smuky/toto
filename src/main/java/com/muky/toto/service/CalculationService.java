@@ -29,24 +29,24 @@ public class CalculationService {
         return answer;
     }
 
-    public TodoPredictionPromptResponse calculateTotoPredictionFromStanding(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
-        Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(homeTeam, awayTeam, language);
+    public TodoPredictionPromptResponse calculateTotoPredictionFromStanding(String predictorId, String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
+        Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(predictorId, homeTeam, awayTeam, language);
         if (cachedResponse.isPresent()) {
-            log.info("Found cached response for {} - {} - {}", homeTeam, awayTeam, language);
+            log.info("Found cached response for {} - {} - {} with predictorId {}", homeTeam, awayTeam, language, predictorId);
             return cachedResponse.get();
         }
         
         TodoPredictionPromptResponse todoPredictionPromptResponse = openAiService.getTodoPredictionPromptResponse(homeTeam, awayTeam, language, "", leagueEnum);
-        redisCacheManager.cachePrediction(homeTeam, awayTeam, language, todoPredictionPromptResponse);
+        redisCacheManager.cachePrediction(predictorId, homeTeam, awayTeam, language, todoPredictionPromptResponse);
         return todoPredictionPromptResponse;
     }
 
-    public TodoPredictionPromptResponse getPredictionFromApiFootball(String team1, String team2, int fixtureId, String language) {
-        log.info("Getting prediction for fixture {} in language {}", fixtureId, language);
+    public TodoPredictionPromptResponse getPredictionFromApiFootball(String predictorId, String team1, String team2, int fixtureId, String language) {
+        log.info("Getting prediction for fixture {} in language {} with predictorId {}", fixtureId, language, predictorId);
         
-        Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getApiFootballPrediction(fixtureId, language);
+        Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getApiFootballPrediction(predictorId, fixtureId, language);
         if (cachedResponse.isPresent()) {
-            log.info("Found cached API-Football prediction for fixture {} in {}", fixtureId, language);
+            log.info("Found cached API-Football prediction for fixture {} in {} with predictorId {}", fixtureId, language, predictorId);
             return cachedResponse.get();
         }
 
@@ -62,9 +62,9 @@ public class CalculationService {
         log.debug("API-Football predictions JSON: {}", predictionsJson);
 
         TodoPredictionPromptResponse apiFootballPrediction = openAiService.getCleanMatchPrediction(team1, team2, matchAnalysisData, language);
-        redisCacheManager.cacheApiFootballPrediction(fixtureId, language, apiFootballPrediction);
+        redisCacheManager.cacheApiFootballPrediction(predictorId, fixtureId, language, apiFootballPrediction);
         
-        log.info("Successfully generated and cached readable prediction for fixture {} in {}", fixtureId, language);
+        log.info("Successfully generated and cached readable prediction for fixture {} in {} with predictorId {}", fixtureId, language, predictorId);
         return apiFootballPrediction;
     }
 

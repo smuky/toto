@@ -47,16 +47,16 @@ public class RedisCacheManager {
         log.info("Redis connection initialized to {}:{}", redisHost, redisPort);
     }
 
-    private String generateKey(String team1, String team2, String lang) {
+    private String generateKey(String predictorId, String team1, String team2, String lang) {
         String[] teams = {team1, team2};
         Arrays.sort(teams); // Sorts "Lakers", "Celtics" -> "Celtics", "Lakers"
-        return String.format("game:%s.%s.%s", teams[0], teams[1], lang);
+        return String.format("game:%s.%s.%s.%s", predictorId, teams[0], teams[1], lang);
 
     }
 
     // TRICK #2: Set with Expiration (SETEX)
-    public void cachePrediction(String team1, String team2, String lang, TodoPredictionPromptResponse predictionResponse) {
-        String key = generateKey(team1, team2, lang);
+    public void cachePrediction(String predictorId, String team1, String team2, String lang, TodoPredictionPromptResponse predictionResponse) {
+        String key = generateKey(predictorId, team1, team2, lang);
 
         try {
             String json = objectMapper.writeValueAsString(predictionResponse);
@@ -67,9 +67,9 @@ public class RedisCacheManager {
             throw new RuntimeException(e);
         }
     }
-    public Optional<TodoPredictionPromptResponse> getPrediction(String team1, String team2, String lang) {
-        log.info("Getting prediction for {} vs {} in {}", team1, team2, lang);
-        String key = generateKey(team1, team2, lang);
+    public Optional<TodoPredictionPromptResponse> getPrediction(String predictorId, String team1, String team2, String lang) {
+        log.info("Getting prediction for {} vs {} in {} with predictorId {}", team1, team2, lang, predictorId);
+        String key = generateKey(predictorId, team1, team2, lang);
         Optional<byte[]> bytes = get(key);
 
         if (!bytes.isPresent()) {
@@ -86,12 +86,12 @@ public class RedisCacheManager {
         }
     }
 
-    private String generateFixtureKey(int fixtureId, String lang) {
-        return String.format("fixture:%d.%s", fixtureId, lang);
+    private String generateFixtureKey(String predictorId, int fixtureId, String lang) {
+        return String.format("fixture:%s.%d.%s", predictorId, fixtureId, lang);
     }
 
-    public void cacheApiFootballPrediction(int fixtureId, String lang, TodoPredictionPromptResponse predictionResponse) {
-        String key = generateFixtureKey(fixtureId, lang);
+    public void cacheApiFootballPrediction(String predictorId, int fixtureId, String lang, TodoPredictionPromptResponse predictionResponse) {
+        String key = generateFixtureKey(predictorId, fixtureId, lang);
 
         try {
             String json = objectMapper.writeValueAsString(predictionResponse);
@@ -103,9 +103,9 @@ public class RedisCacheManager {
         }
     }
 
-    public Optional<TodoPredictionPromptResponse> getApiFootballPrediction(int fixtureId, String lang) {
-        log.info("Getting API-Football prediction for fixture {} in {}", fixtureId, lang);
-        String key = generateFixtureKey(fixtureId, lang);
+    public Optional<TodoPredictionPromptResponse> getApiFootballPrediction(String predictorId, int fixtureId, String lang) {
+        log.info("Getting API-Football prediction for fixture {} in {} with predictorId {}", fixtureId, lang, predictorId);
+        String key = generateFixtureKey(predictorId, fixtureId, lang);
         Optional<byte[]> bytes = get(key);
 
         if (!bytes.isPresent()) {

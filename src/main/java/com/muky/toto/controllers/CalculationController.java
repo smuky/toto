@@ -41,16 +41,16 @@ public class CalculationController implements CalculationApi {
     public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String predictorId, String homeTeam,
                                                                                      String awayTeam, int fixtureId, LeagueEnum league, String language) {
         TodoPredictionPromptResponse todoPredictionPromptResponse;
-        log.info("getPredictionFromApiFootball: fixtureId={}, language={}", fixtureId, language);
+        log.info("calculatePrediction: predictorId={}, fixtureId={}, language={}", predictorId, fixtureId, language);
         try {
             if (language == null || language.isEmpty()) {
                 language = "en";
             }
             if (fixtureId == 0) {
-                 todoPredictionPromptResponse = calculationService.calculateTotoPredictionFromStanding(homeTeam,
+                 todoPredictionPromptResponse = calculationService.calculateTotoPredictionFromStanding(predictorId, homeTeam,
                          awayTeam, language, league);
             } else {
-                todoPredictionPromptResponse = calculationService.getPredictionFromApiFootball(homeTeam, awayTeam, fixtureId, language);
+                todoPredictionPromptResponse = calculationService.getPredictionFromApiFootball(predictorId, homeTeam, awayTeam, fixtureId, language);
             }
             return ResponseEntity.ok(todoPredictionPromptResponse);
         } catch (IllegalArgumentException e) {

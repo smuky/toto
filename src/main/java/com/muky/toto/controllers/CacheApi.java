@@ -83,6 +83,8 @@ public interface CacheApi {
     })
     @GetMapping("/prediction")
     ResponseEntity<Optional<TodoPredictionPromptResponse>> getPrediction(
+            @Parameter(description = "Predictor ID", required = true)
+            @RequestParam String predictorId,
             @Parameter(description = "First team name", required = true)
             @RequestParam String team1,
             @Parameter(description = "Second team name", required = true)

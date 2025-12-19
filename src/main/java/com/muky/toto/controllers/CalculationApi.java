@@ -55,7 +55,7 @@ public interface CalculationApi {
     @GetMapping("/calculate-prediction")
     ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(
             @Parameter(description = "Predictor ID", required = true)
-            @RequestParam(value = "predictor-id") String predictorId,
+            @RequestParam(value = "predictorId") String predictorId,
             @Parameter(description = "Home team name", required = true)
             @RequestParam("home-team") String team1,
             @Parameter(description = "Away team name", required = true)
