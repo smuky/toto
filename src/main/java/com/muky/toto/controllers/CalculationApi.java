@@ -44,27 +44,6 @@ public interface CalculationApi {
     );
 
     @Operation(
-            summary = "Calculate match prediction with structured response",
-            description = "Calculates detailed match prediction with probabilities, analysis, and justification in a structured format"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully calculated prediction"),
-            @ApiResponse(responseCode = "400", description = "Invalid team names or teams not in same league"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/calculate-prediction")
-    ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(
-            @Parameter(description = "Home team name", required = true)
-            @RequestParam("home-team") String homeTeam,
-            @Parameter(description = "Away team name", required = true)
-            @RequestParam("away-team") String awayTeam,
-            @Parameter(description = "Language for analysis text (default: hebrew)")
-            @RequestParam(value = "language", defaultValue = "hebrew") SupportedLanguageEnum language,
-            @Parameter(description = "League", required = true)
-            @RequestParam("league") LeagueEnum league
-    );
-
-    @Operation(
             summary = "Get prediction from API-Football fixture",
             description = "Retrieves predictions from API-Football for a specific fixture and formats them in a readable user-friendly format using AI"
     )
@@ -73,14 +52,18 @@ public interface CalculationApi {
             @ApiResponse(responseCode = "400", description = "Invalid fixture ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/prediction-from-fixture")
-    ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(
+    @GetMapping("/calculate-prediction")
+    ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(
+            @Parameter(description = "Predictor ID", required = true)
+            @RequestParam(value = "predictor-id") String predictorId,
             @Parameter(description = "Home team name", required = true)
             @RequestParam("home-team") String team1,
             @Parameter(description = "Away team name", required = true)
             @RequestParam("away-team") String team2,
             @Parameter(description = "Fixture ID from API-Football", required = true)
             @RequestParam("fixtureId") int fixtureId,
+            @Parameter(description = "League", required = true)
+            @RequestParam("league") LeagueEnum league,
             @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     );

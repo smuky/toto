@@ -30,12 +30,6 @@ public class CalculationService {
     }
 
     public TodoPredictionPromptResponse calculateTotoPredictionFromStanding(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
-        Standing standing = apiFootballService.getStanding(leagueEnum);
-        
-        if (standing == null || standing.getLeague() == null || standing.getLeague().getStandings() == null) {
-            throw new IllegalArgumentException("No standings found for league '" + leagueEnum + "'");
-        }
-
         Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(homeTeam, awayTeam, language);
         if (cachedResponse.isPresent()) {
             log.info("Found cached response for {} - {} - {}", homeTeam, awayTeam, language);

@@ -38,28 +38,21 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String homeTeam, String awayTeam, SupportedLanguageEnum language, LeagueEnum league) {
-        log.info("calculatePrediction: homeTeam={}, awayTeam={}, language={}, league={}", homeTeam, awayTeam, language, league);
-        try {
-            if (language == null) {
-                language = SupportedLanguageEnum.EN;
-            }
-            TodoPredictionPromptResponse todoPredictionPromptResponse = calculationService.calculateTotoPredictionFromStanding(homeTeam, awayTeam, language.getLanguage(), league);
-            return ResponseEntity.ok(todoPredictionPromptResponse);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @Override
-    public ResponseEntity<TodoPredictionPromptResponse> getPredictionFromApiFootball(String homeTeam, String awayTeam, int fixtureId, String language) {
+    public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String predictorId, String homeTeam,
+                                                                                     String awayTeam, int fixtureId, LeagueEnum league, String language) {
+        TodoPredictionPromptResponse todoPredictionPromptResponse;
         log.info("getPredictionFromApiFootball: fixtureId={}, language={}", fixtureId, language);
         try {
             if (language == null || language.isEmpty()) {
                 language = "en";
             }
-            TodoPredictionPromptResponse predictionFromApiFootball = calculationService.getPredictionFromApiFootball(homeTeam, awayTeam, fixtureId, language);
-            return ResponseEntity.ok(predictionFromApiFootball);
+            if (fixtureId == 0) {
+                 todoPredictionPromptResponse = calculationService.calculateTotoPredictionFromStanding(homeTeam,
+                         awayTeam, language, league);
+            } else {
+                todoPredictionPromptResponse = calculationService.getPredictionFromApiFootball(homeTeam, awayTeam, fixtureId, language);
+            }
+            return ResponseEntity.ok(todoPredictionPromptResponse);
         } catch (IllegalArgumentException e) {
             log.error("Invalid fixture ID: {}", fixtureId, e);
             return ResponseEntity.badRequest().build();
