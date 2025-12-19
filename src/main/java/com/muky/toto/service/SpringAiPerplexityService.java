@@ -47,25 +47,6 @@ public class SpringAiPerplexityService implements OpenAiService {
     private Resource cleanMatchPredictionTemplate;
 
     @Override
-    public Answer getAnswer(String team1, String team2, String language, String extraInput, LeagueEnum leagueEnum) {
-        PromptTemplate promptTemplate = new PromptTemplate(totoPredictionTemplateHebrew);
-        // TODO: Replace with actual standings data from ApiFootballService
-        List<TeamScoreEntry> scoreBoard = List.of();
-        Prompt prompt = promptTemplate.create(Map.of(
-                "team1", team1,
-                "team2", team2,
-                "scoreBoard", scoreBoard,
-                "language", language,
-                "leagueLanguage", leagueEnum.getLeagueLanguage()
-        ));
-
-        log.info("Prompt: {}", prompt);
-        ChatResponse response = chatModel.call(prompt);
-
-        return new Answer(response.getResult().getOutput().getText());
-    }
-
-    @Override
     public TodoPredictionPromptResponse getTodoPredictionPromptResponse(String team1, String team2, String language, String extraInput, LeagueEnum leagueEnum) {
         // 1. Create the converter with your class
         BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
@@ -122,52 +103,6 @@ public class SpringAiPerplexityService implements OpenAiService {
     }
 
     @Override
-    public TodoPredictionPromptResponse getApiFootballPrediction(Prediction predictions, String language) {
-        BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
-        String formatInstructions = converter.getFormat();
-
-        PromptTemplate promptTemplate = new PromptTemplate(apiFootballPredictionTemplate);
-        Prompt prompt = promptTemplate.create(Map.of(
-                "team1", predictions.getTeams().getHome(),
-                "team2", predictions.getTeams().getAway(),
-                "data", predictions,
-                "language", language,
-                "leagueLanguage", predictions.getLeague().getCountry(),
-                "format", formatInstructions // <--- Pass the instructions here
-        ));
-
-        log.info("Calling AI to format API-Football predictions in language: {}", language);
-
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .temperature(0.3)
-                .maxTokens(3000)
-                .build();
-
-        Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
-        ChatResponse response = chatModel.call(promptWithOptions);
-
-        String rawResponse = response.getResult().getOutput().getText();
-        String finishReason = response.getResult().getMetadata().getFinishReason();
-
-        log.debug("Raw AI response: {}", rawResponse);
-        log.debug("AI finish reason: {}", finishReason);
-
-        if ("length".equals(finishReason)) {
-            log.error("AI response was truncated due to token limit (maxTokens=3000). Response length: {} chars", rawResponse.length());
-            throw new RuntimeException("AI response was truncated. Please simplify the prompt or increase maxTokens.");
-        }
-
-        try {
-            TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
-            log.info("Generated API-Football prediction in {}", language);
-            return prediction;
-        } catch (Exception e) {
-            log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);
-            throw new RuntimeException("Failed to parse AI response - response may be malformed", e);
-        }
-    }
-
-    @Override
     public TodoPredictionPromptResponse getCleanMatchPrediction(String team1, String team2, MatchAnalysisData matchData, String language) {
         BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
         String formatInstructions = converter.getFormat();
@@ -209,49 +144,6 @@ public class SpringAiPerplexityService implements OpenAiService {
             TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
             log.info("Generated match prediction using clean objective data in {}", language);
             return prediction;
-        } catch (Exception e) {
-            log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);
-            throw new RuntimeException("Failed to parse AI response - response may be malformed", e);
-        }
-    }
-
-    @Override
-    public BatchFixturePredictionResponse getBatchFixturePredictions(String fixturesPredictions, String language) {
-        BeanOutputConverter<BatchFixturePredictionResponse> converter = new BeanOutputConverter<>(BatchFixturePredictionResponse.class);
-        String formatInstructions = converter.getFormat();
-
-        PromptTemplate promptTemplate = new PromptTemplate(batchFixturePredictionTemplate);
-        Prompt prompt = promptTemplate.create(Map.of(
-                "fixturesPredictions", fixturesPredictions,
-                "language", language,
-                "format", formatInstructions
-        ));
-
-        log.info("Calling AI to format batch fixture predictions in language: {}", language);
-
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .temperature(0.3)
-                .maxTokens(4000)
-                .build();
-
-        Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
-        ChatResponse response = chatModel.call(promptWithOptions);
-
-        String rawResponse = response.getResult().getOutput().getText();
-        String finishReason = response.getResult().getMetadata().getFinishReason();
-
-        log.debug("Raw AI response: {}", rawResponse);
-        log.debug("AI finish reason: {}", finishReason);
-
-        if ("length".equals(finishReason)) {
-            log.error("AI response was truncated due to token limit (maxTokens=4000). Response length: {} chars", rawResponse.length());
-            throw new RuntimeException("AI response was truncated. Please simplify the prompt or increase maxTokens.");
-        }
-
-        try {
-            BatchFixturePredictionResponse batchPrediction = converter.convert(rawResponse);
-            log.info("Generated batch fixture predictions in {}", language);
-            return batchPrediction;
         } catch (Exception e) {
             log.error("Failed to parse AI response. Raw response: {}", rawResponse, e);
             throw new RuntimeException("Failed to parse AI response - response may be malformed", e);

@@ -24,20 +24,6 @@ public class CalculationController implements CalculationApi {
     }
 
     @Override
-    public ResponseEntity<String> calculateOdds(String homeTeam, String awayTeam, String language, LeagueEnum league) {
-        log.info("calculateOdds: homeTeam={}, awayTeam={}, language={}, league={}", homeTeam, awayTeam, language, league);
-        try {
-            if (language == null) {
-                language = "english";
-            }
-            Answer answer = calculationService.calculateAnswer(homeTeam, awayTeam, language, league);
-            return ResponseEntity.ok(answer.answer());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @Override
     public ResponseEntity<TodoPredictionPromptResponse> calculatePrediction(String predictorId, String homeTeam,
                                                                                      String awayTeam, int fixtureId, LeagueEnum league, String language) {
         TodoPredictionPromptResponse todoPredictionPromptResponse;
@@ -62,23 +48,4 @@ public class CalculationController implements CalculationApi {
         }
     }
 
-    @Override
-    public ResponseEntity<BatchFixturePredictionResponse> getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
-        log.info("getBatchFixturePredictions: fixtureIds={}, language={}", fixtureIds, language);
-        try {
-            if (fixtureIds == null || fixtureIds.isEmpty()) {
-                log.error("Fixture IDs list is empty or null");
-                return ResponseEntity.badRequest().build();
-            }
-            
-            //BatchFixturePredictionResponse batchPrediction = calculationService.getBatchFixturePredictions(fixtureIds, language);
-            return null;
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid fixture IDs: {}", fixtureIds, e);
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            log.error("Error getting batch predictions for fixtures: {}", fixtureIds, e);
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 }

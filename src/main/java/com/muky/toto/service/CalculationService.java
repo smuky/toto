@@ -3,10 +3,8 @@ package com.muky.toto.service;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
 import com.muky.toto.cache.RedisCacheManager;
 import com.muky.toto.client.api_football.Prediction;
-import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.client.api_football.mapper.MatchAnalysisMapper;
 import com.muky.toto.client.api_football.prediction.MatchAnalysisData;
-import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +20,6 @@ public class CalculationService {
     private final RedisCacheManager redisCacheManager;
     private final ApiFootballService apiFootballService;
     private final MatchAnalysisMapper matchAnalysisMapper;
-
-    public Answer calculateAnswer(String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
-        Answer answer = openAiService.getAnswer(homeTeam, awayTeam, language, "", leagueEnum);
-        log.info("Question {}. /n Answer: {}", homeTeam + " - " + awayTeam, answer);
-        return answer;
-    }
 
     public TodoPredictionPromptResponse calculateTotoPredictionFromStanding(String predictorId, String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
         Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(predictorId, homeTeam, awayTeam, language);
@@ -67,39 +59,4 @@ public class CalculationService {
         log.info("Successfully generated and cached readable prediction for fixture {} in {} with predictorId {}", fixtureId, language, predictorId);
         return apiFootballPrediction;
     }
-
- /*   public BatchFixturePredictionResponse getBatchFixturePredictions(List<Integer> fixtureIds, String language) {
-        log.info("Getting batch predictions for {} fixtures in language {}", fixtureIds.size(), language);
-        
-        StringBuilder allPredictionsBuilder = new StringBuilder();
-        allPredictionsBuilder.append("[");
-        
-        for (int i = 0; i < fixtureIds.size(); i++) {
-            int fixtureId = fixtureIds.get(i);
-            log.info("Fetching prediction data for fixture {}", fixtureId);
-            
-            JsonNode predictions = apiFootballService.getPredictions(fixtureId);
-            
-            if (predictions == null) {
-                log.warn("No predictions found for fixture ID: {}, skipping", fixtureId);
-                continue;
-            }
-            
-            allPredictionsBuilder.append(predictions.toString());
-            
-            if (i < fixtureIds.size() - 1) {
-                allPredictionsBuilder.append(",");
-            }
-        }
-        
-        allPredictionsBuilder.append("]");
-        
-        String allPredictionsJson = allPredictionsBuilder.toString();
-        log.debug("Combined predictions JSON for {} fixtures", fixtureIds.size());
-        
-        BatchFixturePredictionResponse batchPrediction = openAiService.getBatchFixturePredictions(allPredictionsJson, language);
-        
-        log.info("Successfully generated batch predictions for {} fixtures in {}", fixtureIds.size(), language);
-        return batchPrediction;
-    }*/
 }
