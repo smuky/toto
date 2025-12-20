@@ -1,14 +1,11 @@
-package com.muky.toto.service;
+package com.muky.toto.service.ai;
 
-import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
-import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.Standing;
 import com.muky.toto.client.api_football.prediction.MatchAnalysisData;
-import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
-import com.muky.toto.model.TeamScoreEntry;
-import lombok.RequiredArgsConstructor;
+import com.muky.toto.model.SupportedLanguageEnum;
+import com.muky.toto.service.ApiFootballService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -18,33 +15,23 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Service("springAiPerplexityService")
-@RequiredArgsConstructor
-public class SpringAiPerplexityService implements OpenAiService {
-    
-    private final OpenAiChatModel chatModel;
+public abstract class OpenAiServiceBase implements OpenAiService{
+
     private final ApiFootballService apiFootballService;
 
     @Value("classpath:/templates/TotoPredictionPrompt.st")
     private Resource totoPredictionTemplate;
 
-    @Value("classpath:/templates/TotoPredictionPromptHebrew.st")
-    private Resource totoPredictionTemplateHebrew;
-
-    @Value("classpath:/templates/ApiFootballPredictionPrompt.st")
-    private Resource apiFootballPredictionTemplate;
-
-    @Value("classpath:/templates/BatchFixturePredictionPrompt.st")
-    private Resource batchFixturePredictionTemplate;
-
     @Value("classpath:/templates/CleanMatchPredictionPrompt.st")
     private Resource cleanMatchPredictionTemplate;
+
+    protected OpenAiServiceBase(ApiFootballService apiFootballService) {
+        this.apiFootballService = apiFootballService;
+    }
 
     @Override
     public TodoPredictionPromptResponse getTodoPredictionPromptResponse(String team1, String team2, String language, String extraInput, LeagueEnum leagueEnum) {
@@ -58,7 +45,6 @@ public class SpringAiPerplexityService implements OpenAiService {
         // 3. Update your PromptTemplate to include the {format} placeholder
         // Note: I added {format} at the end of the template string below
         PromptTemplate promptTemplate = new PromptTemplate(totoPredictionTemplate);
-        // TODO: Replace with actual standings data from ApiFootballService
         Prompt prompt = promptTemplate.create(Map.of(
                 "team1", team1,
                 "team2", team2,
@@ -75,23 +61,24 @@ public class SpringAiPerplexityService implements OpenAiService {
                 .temperature(0.3)
                 .maxTokens(4000)
                 .build();
-        
+
         Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
-        ChatResponse response = chatModel.call(promptWithOptions);
+
+        ChatResponse response = getChatModel().call(promptWithOptions);
 
         // 5. Convert the raw string response into your Java Object
         String rawResponse = response.getResult().getOutput().getText();
         String finishReason = response.getResult().getMetadata().getFinishReason();
-        
+
         log.debug("Raw AI response: {}", rawResponse);
         log.debug("AI finish reason: {}", finishReason);
-        
+
         // Check if response was truncated
         if ("length".equals(finishReason)) {
             log.error("AI response was truncated due to token limit (maxTokens=4000). Response length: {} chars", rawResponse.length());
             throw new RuntimeException("AI response was truncated. Please simplify the prompt or increase maxTokens.");
         }
-        
+
         try {
             TodoPredictionPromptResponse prediction = converter.convert(rawResponse);
             log.info("Justification (in {}): {}", language, prediction.justification());
@@ -102,23 +89,26 @@ public class SpringAiPerplexityService implements OpenAiService {
         }
     }
 
+    protected abstract OpenAiChatModel getChatModel();
+
     @Override
     public TodoPredictionPromptResponse getCleanMatchPrediction(String team1, String team2, MatchAnalysisData matchData, String language) {
         BeanOutputConverter<TodoPredictionPromptResponse> converter = new BeanOutputConverter<>(TodoPredictionPromptResponse.class);
         String formatInstructions = converter.getFormat();
+        SupportedLanguageEnum supportedLanguageEnum = SupportedLanguageEnum.valueOf(language.toUpperCase());
 
         PromptTemplate promptTemplate = new PromptTemplate(cleanMatchPredictionTemplate);
         Prompt prompt = promptTemplate.create(Map.of(
                 "team1", team1,
                 "team2", team2,
                 "matchData", matchData,
-                "language", language,
+                "language", supportedLanguageEnum.getLanguage(),
                 "format", formatInstructions
         ));
 
-        log.info("Calling AI with clean MatchAnalysisData for teams: {} vs {} in language: {}", 
-                matchData.getHomeTeam().getName(), 
-                matchData.getAwayTeam().getName(), 
+        log.info("Calling AI with clean MatchAnalysisData for teams: {} vs {} in language: {}",
+                matchData.getHomeTeam().getName(),
+                matchData.getAwayTeam().getName(),
                 language);
 
         OpenAiChatOptions options = OpenAiChatOptions.builder()
@@ -127,7 +117,7 @@ public class SpringAiPerplexityService implements OpenAiService {
                 .build();
 
         Prompt promptWithOptions = new Prompt(prompt.getInstructions(), options);
-        ChatResponse response = chatModel.call(promptWithOptions);
+        ChatResponse response = getChatModel().call(promptWithOptions);
 
         String rawResponse = response.getResult().getOutput().getText();
         String finishReason = response.getResult().getMetadata().getFinishReason();

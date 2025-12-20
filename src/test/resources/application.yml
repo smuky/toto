@@ -3,16 +3,16 @@ spring:
     name: toto
   ai:
     openai:
-      api-key: test-key
-      base-url: https://api.perplexity.ai
+      api-key: test-openai-key
       chat:
-        completions-path: /chat/completions
         options:
-          model: sonar
-          temperature: 0.3
-          max-tokens: 2000
-      embedding:
-        enabled: false
+          model: gpt-4o
+
+custom:
+  ai:
+    perplexity:
+      api-key: test-perplexity-key
+      base-url: https://api.perplexity.ai
 
 redis:
   host: localhost

@@ -1,17 +1,11 @@
 package com.muky.toto.controllers;
 
-import com.muky.toto.ai_response.ApiFootballPredictionResponse;
-import com.muky.toto.ai_response.BatchFixturePredictionResponse;
 import com.muky.toto.ai_response.TodoPredictionPromptResponse;
-import com.muky.toto.model.Answer;
 import com.muky.toto.model.LeagueEnum;
-import com.muky.toto.model.SupportedLanguageEnum;
 import com.muky.toto.service.CalculationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController

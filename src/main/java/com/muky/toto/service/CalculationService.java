@@ -6,26 +6,41 @@ import com.muky.toto.client.api_football.Prediction;
 import com.muky.toto.client.api_football.mapper.MatchAnalysisMapper;
 import com.muky.toto.client.api_football.prediction.MatchAnalysisData;
 import com.muky.toto.model.LeagueEnum;
-import lombok.RequiredArgsConstructor;
+import com.muky.toto.service.ai.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public class CalculationService {
-    private final OpenAiService openAiService;
+    private final Map<String, OpenAiService> openAiServiceMap;
     private final RedisCacheManager redisCacheManager;
     private final ApiFootballService apiFootballService;
     private final MatchAnalysisMapper matchAnalysisMapper;
+
+    public CalculationService(List<OpenAiService> openAiServices, RedisCacheManager redisCacheManager, ApiFootballService apiFootballService, MatchAnalysisMapper matchAnalysisMapper) {
+        this.openAiServiceMap = openAiServices.stream()
+                .collect(Collectors.toMap(OpenAiService::getPredictorId, service -> service));
+        this.redisCacheManager = redisCacheManager;
+        this.apiFootballService = apiFootballService;
+        this.matchAnalysisMapper = matchAnalysisMapper;
+    }
 
     public TodoPredictionPromptResponse calculateTotoPredictionFromStanding(String predictorId, String homeTeam, String awayTeam, String language, LeagueEnum leagueEnum) {
         Optional<TodoPredictionPromptResponse> cachedResponse = redisCacheManager.getPrediction(predictorId, homeTeam, awayTeam, language);
         if (cachedResponse.isPresent()) {
             log.info("Found cached response for {} - {} - {} with predictorId {}", homeTeam, awayTeam, language, predictorId);
             return cachedResponse.get();
+        }
+        
+        OpenAiService openAiService = openAiServiceMap.get(predictorId);
+        if (openAiService == null) {
+            throw new IllegalArgumentException("No OpenAiService found for predictorId: " + predictorId);
         }
         
         TodoPredictionPromptResponse todoPredictionPromptResponse = openAiService.getTodoPredictionPromptResponse(homeTeam, awayTeam, language, "", leagueEnum);
@@ -52,6 +67,11 @@ public class CalculationService {
         
         String predictionsJson = predictions.toString();
         log.debug("API-Football predictions JSON: {}", predictionsJson);
+
+        OpenAiService openAiService = openAiServiceMap.get(predictorId);
+        if (openAiService == null) {
+            throw new IllegalArgumentException("No OpenAiService found for predictorId: " + predictorId);
+        }
 
         TodoPredictionPromptResponse apiFootballPrediction = openAiService.getCleanMatchPrediction(team1, team2, matchAnalysisData, language);
         redisCacheManager.cacheApiFootballPrediction(predictorId, fixtureId, language, apiFootballPrediction);
