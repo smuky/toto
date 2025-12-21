@@ -1,12 +1,17 @@
 package com.muky.toto.controllers.response;
 
 import com.muky.toto.model.LeagueEnum;
+import com.muky.toto.model.PredefinedEvent;
 
+import java.util.List;
 import java.util.Map;
 
 public record TranslationResponse(
         Map<LeagueEnum, String> leagueTranslations,
         Map<String, String> languageTranslations,
+        List<PredefinedEvent> predefinedEvents,
+        String selectLeagueMode,
+        String recommendedListsMode,
         String selectLeague,
         String settings,
         String about,

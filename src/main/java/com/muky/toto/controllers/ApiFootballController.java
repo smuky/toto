@@ -46,10 +46,21 @@ public class ApiFootballController implements ApiFootballApi {
     public ResponseEntity<List<Fixture>> getNextFixtures(LeagueEnum leagueEnum, int next, String language) {
         log.info("Getting next {} fixtures for league {} with language: {}", next, leagueEnum.name(), language);
         List<Fixture> fixtures = apiFootballService.getNextFixtures(leagueEnum, next);
-        
+
         populateFixtureTeamDisplayNames(fixtures, language);
         
         log.info("Retrieved {} fixtures for league {} with language: {}", fixtures.size(), leagueEnum.name(), language);
+        return ResponseEntity.ok(fixtures);
+    }
+
+    @Override
+    public ResponseEntity<List<Fixture>> getPreDefineFixtureList(String eventName, String language) {
+        log.info("Getting predefined event {} with language: {}", eventName, language);
+        List<Fixture> fixtures = apiFootballService.getPreDefineEvent(eventName);
+
+        populateFixtureTeamDisplayNames(fixtures, language);
+
+        log.info("Retrieved {} fixtures for predefined event {} with language: {}", fixtures.size(), eventName, language);
         return ResponseEntity.ok(fixtures);
     }
 

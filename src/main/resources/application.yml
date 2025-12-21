@@ -42,9 +42,12 @@ custom:
       base-url: https://api.perplexity.ai
 
 app:
-  min-version: ${APP_MIN_VERSION:1.0.0+25}
+  min-version: ${APP_MIN_VERSION:1.0.1+36}
   api-football:
     api-key: ${API_FOOTBALL_KEY}
+  predefined-events:
+    winner16: ${WINNER_16:1379143-1379142-1379148-1379141-1379140-1378033-1386832-1386834-1386830-1386831-1386836-1386828}
+    winner16World: ${WINNER_16_WORLD:1389689-1389689-1389896-1389889-1389891-1379133-1379133-1390979}
   league:
     israel:
       season_id: 27

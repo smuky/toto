@@ -72,10 +72,9 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(46, "team.leicester");
         TEAM_ID_TO_TRANSLATION_KEY.put(1359, "team.luton");
         TEAM_ID_TO_TRANSLATION_KEY.put(57, "team.ipswich");
-        TEAM_ID_TO_TRANSLATION_KEY.put(1346, "team.middlesbrough");
         TEAM_ID_TO_TRANSLATION_KEY.put(61, "team.preston");
         TEAM_ID_TO_TRANSLATION_KEY.put(59, "team.millwall");
-        TEAM_ID_TO_TRANSLATION_KEY.put(1345, "team.coventry");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1346, "team.coventry");
         TEAM_ID_TO_TRANSLATION_KEY.put(72, "team.qpr");
         TEAM_ID_TO_TRANSLATION_KEY.put(41, "team.southampton");
         TEAM_ID_TO_TRANSLATION_KEY.put(56, "team.bristol_city");

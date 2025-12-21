@@ -2,13 +2,17 @@ package com.muky.toto.service;
 
 import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.model.LeagueEnum;
+import com.muky.toto.model.PredefinedEvent;
 import com.muky.toto.model.TeamTranslationMapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 public class TranslationService {
 
     private final MessageSource messageSource;
+    private final Environment environment;
 
     public String translate(String key, String language) {
         Locale locale = Locale.forLanguageTag(language);
@@ -68,6 +73,8 @@ public class TranslationService {
                 "he", translate("language.hebrew", language)
         );
 
+        String selectLeagueMode = translate("select.league.mode", language);
+        String recommendedListsMode = translate("recommended.lists.mode", language);
         String selectLeague = translate("select.league", language);
         String settings = translate("settings", language);
         String about = translate("about", language);
@@ -94,9 +101,14 @@ public class TranslationService {
         String termsOfUseReadPolicy = translate("terms_of_use.read_policy", language);
         String termsOfUseAgreeContinue = translate("terms_of_use.agree_continue", language);
 
+        List<PredefinedEvent> predefinedEvents = getPredefinedEvents(language);
+
         return new TranslationResponse(
                 leagueTranslations,
                 languageTranslations,
+                predefinedEvents,
+                selectLeagueMode,
+                recommendedListsMode,
                 selectLeague,
                 settings,
                 about,
@@ -123,5 +135,38 @@ public class TranslationService {
                 termsOfUseReadPolicy,
                 termsOfUseAgreeContinue
         );
+    }
+
+    public List<PredefinedEvent> getPredefinedEvents(String language) {
+        List<PredefinedEvent> events = new ArrayList<>();
+        
+        // Get all properties that start with "app.predefined-events."
+        String prefix = "app.predefined-events.";
+        org.springframework.core.env.MutablePropertySources propertySources = 
+            ((org.springframework.core.env.AbstractEnvironment) environment).getPropertySources();
+        
+        propertySources.forEach(propertySource -> {
+            if (propertySource instanceof org.springframework.core.env.EnumerablePropertySource) {
+                org.springframework.core.env.EnumerablePropertySource<?> enumerable = 
+                    (org.springframework.core.env.EnumerablePropertySource<?>) propertySource;
+                for (String propertyName : enumerable.getPropertyNames()) {
+                    if (propertyName.startsWith(prefix)) {
+                        String eventKey = propertyName.substring(prefix.length());
+                        String translationKey = "predefined-event." + eventKey;
+                        String displayName;
+                        try {
+                            displayName = translate(translationKey, language);
+                        } catch (Exception e) {
+                            log.warn("Translation not found for key: {} in language: {}, using key as display name", translationKey, language);
+                            displayName = eventKey;
+                        }
+                        events.add(new PredefinedEvent(eventKey, displayName));
+                    }
+                }
+            }
+        });
+        
+        log.info("Found {} predefined events for language: {}", events.size(), language);
+        return events;
     }
 }

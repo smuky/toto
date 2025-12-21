@@ -13,6 +13,7 @@ import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.apifootball.SupportedCountriesEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class ApiFootballService {
     private final ApiFootballAdapter apiFootballAdapter;
     private final RedisCacheManager redisCacheManager;
     private final ObjectMapperService objectMapperService;
+    private final Environment environment;
 
     public List<League> getLeagues(SupportedCountriesEnum country) {
         List<League> leagues = null;
@@ -162,4 +164,22 @@ public class ApiFootballService {
         }
         return apiFootballAdapter.parsePrediction(predictions);
     }
+
+    public List<Fixture> getPreDefineEvent(String eventName) {
+        String propertyKey = "app.predefined-events." + eventName;
+        String fixtureIds = environment.getProperty(propertyKey);
+        
+        if (fixtureIds == null || fixtureIds.isEmpty()) {
+            log.warn("No fixture IDs found for predefined event: {}. Property key: {}", eventName, propertyKey);
+            throw new RuntimeException("No fixture IDs configured for event: " + eventName);
+        }
+        
+        log.info("Fetching predefined event {} with fixture IDs: {}", eventName, fixtureIds);
+        
+        JsonNode jsonNode = apiFootballClient.getFixturesByIds(fixtureIds);
+        log.info("Predefined event {} fixtures: {}", eventName, jsonNode);
+        
+        return apiFootballAdapter.parseFixtures(jsonNode, fixtureIds);
+    }
+
 }

@@ -91,6 +91,44 @@ public class ApiFootballAdapter {
         }
     }
 
+    public List<Fixture> parseFixtures(JsonNode jsonNode, String fixtureIdsOrder) {
+        try {
+            ApiFootballResponse<Fixture> apiResponse = objectMapper.convertValue(
+                    jsonNode,
+                    new TypeReference<ApiFootballResponse<Fixture>>() {}
+            );
+            List<Fixture> fixtures = apiResponse.getResponse();
+            if (fixtures == null) {
+                throw new RuntimeException("No fixtures found in response");
+            }
+            
+            if (fixtureIdsOrder != null && !fixtureIdsOrder.isEmpty()) {
+                String[] idOrder = fixtureIdsOrder.split("-");
+                java.util.Map<Long, Integer> idToPosition = new java.util.HashMap<>();
+                for (int i = 0; i < idOrder.length; i++) {
+                    idToPosition.put(Long.parseLong(idOrder[i].trim()), i);
+                }
+
+                // Create a new sorted list to ensure the sort takes effect
+                java.util.List<Fixture> sortedFixtures = new java.util.ArrayList<>(fixtures);
+                sortedFixtures.sort((f1, f2) -> {
+                    long id1 = f1.getFixture().getId();
+                    long id2 = f2.getFixture().getId();
+                    int pos1 = idToPosition.getOrDefault(id1, Integer.MAX_VALUE);
+                    int pos2 = idToPosition.getOrDefault(id2, Integer.MAX_VALUE);
+                    return Integer.compare(pos1, pos2);
+                });
+                
+                return sortedFixtures;
+            }
+            
+            return fixtures;
+        } catch (Exception e) {
+            log.error("Failed to parse fixtures response", e);
+            throw new RuntimeException("Failed to parse fixtures response", e);
+        }
+    }
+
     public Prediction parsePrediction(JsonNode jsonNode) {
         try {
             ApiFootballResponse<Prediction> apiResponse = objectMapper.convertValue(

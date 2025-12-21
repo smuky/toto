@@ -80,5 +80,21 @@ public interface ApiFootballApi {
     ResponseEntity<Prediction> getPredictions(
             @Parameter(description = "Fixture ID", required = true)
             @RequestParam int fixture);
+
+    @Operation(
+            summary = "Get predefined event fixtures",
+            description = "Retrieves fixtures for a predefined event (e.g., winner16, winner16World) using fixture IDs from configuration"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved fixtures"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/fixtures/predefined")
+    ResponseEntity<List<Fixture>> getPreDefineFixtureList(
+            @Parameter(description = "Predefined event name (e.g., winner16, winner16World)", required = true)
+            @RequestParam String eventName,
+            @Parameter(description = "Language code from Accept-Language header (e.g., 'en', 'he')")
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language);
+
 }
 
