@@ -1,6 +1,7 @@
 package com.muky.toto.service;
 
 import com.muky.toto.controllers.response.TranslationResponse;
+import com.muky.toto.controllers.response.UpgradeMessages;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.PredefinedEvent;
 import com.muky.toto.model.TeamTranslationMapping;
@@ -73,6 +74,14 @@ public class TranslationService {
                 "he", translate("language.hebrew", language)
         );
 
+        UpgradeMessages upgradeMessages = new UpgradeMessages(
+                translate("upgrade.minimum.version.header", language),
+                translate("upgrade.minimum.version.body", language),
+                translate("upgrade.minimum.version.current_version", language),
+                translate("upgrade.minimum.version.required_version", language),
+                translate("upgrade.minimum.version.button", language)
+        );
+        
         String selectLeagueMode = translate("select.league.mode", language);
         String recommendedListsMode = translate("recommended.lists.mode", language);
         String selectLeague = translate("select.league", language);
@@ -107,6 +116,7 @@ public class TranslationService {
                 leagueTranslations,
                 languageTranslations,
                 predefinedEvents,
+                upgradeMessages,
                 selectLeagueMode,
                 recommendedListsMode,
                 selectLeague,

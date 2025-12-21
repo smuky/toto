@@ -10,6 +10,7 @@ public record TranslationResponse(
         Map<LeagueEnum, String> leagueTranslations,
         Map<String, String> languageTranslations,
         List<PredefinedEvent> predefinedEvents,
+        UpgradeMessages upgradeMessages,
         String selectLeagueMode,
         String recommendedListsMode,
         String selectLeague,
