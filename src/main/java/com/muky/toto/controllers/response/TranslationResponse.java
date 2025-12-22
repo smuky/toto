@@ -11,6 +11,7 @@ public record TranslationResponse(
         Map<String, String> languageTranslations,
         List<PredefinedEvent> predefinedEvents,
         UpgradeMessages upgradeMessages,
+        PremiumBadgeMessages premiumBadgeMessages,
         String selectLeagueMode,
         String recommendedListsMode,
         String selectLeague,

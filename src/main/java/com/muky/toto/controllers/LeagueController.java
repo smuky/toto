@@ -7,12 +7,14 @@ import com.muky.toto.model.TeamGamesEntry;
 import com.muky.toto.model.TeamScoreEntry;
 import com.muky.toto.service.LeagueService;
 import com.muky.toto.service.TranslationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class LeagueController implements LeagueApi {
 
@@ -50,7 +52,9 @@ public class LeagueController implements LeagueApi {
 
     @Override
     public ResponseEntity<TranslationResponse> getTranslations(String language) {
+        log.debug("getTranslations: {}", language);
         TranslationResponse translations = translationService.getTranslations(language);
+        log.debug("getTranslations: {}", translations);
         return ResponseEntity.ok(translations);
     }
 }

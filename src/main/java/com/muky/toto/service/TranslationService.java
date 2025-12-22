@@ -1,5 +1,6 @@
 package com.muky.toto.service;
 
+import com.muky.toto.controllers.response.PremiumBadgeMessages;
 import com.muky.toto.controllers.response.TranslationResponse;
 import com.muky.toto.controllers.response.UpgradeMessages;
 import com.muky.toto.model.LeagueEnum;
@@ -82,6 +83,13 @@ public class TranslationService {
                 translate("upgrade.minimum.version.button", language)
         );
         
+        PremiumBadgeMessages premiumBadgeMessages = new PremiumBadgeMessages(
+                translate("recommended.lists.premium_badge.title", language),
+                translate("recommended.lists.premium_badge.body", language),
+                translate("recommended.lists.premium_badge.button", language),
+                translate("recommended.lists.premium_badge.back", language)
+        );
+        
         String selectLeagueMode = translate("select.league.mode", language);
         String recommendedListsMode = translate("recommended.lists.mode", language);
         String selectLeague = translate("select.league", language);
@@ -117,6 +125,7 @@ public class TranslationService {
                 languageTranslations,
                 predefinedEvents,
                 upgradeMessages,
+                premiumBadgeMessages,
                 selectLeagueMode,
                 recommendedListsMode,
                 selectLeague,
