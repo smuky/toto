@@ -41,6 +41,12 @@ custom:
       api-key: ${PERPLEXITY_API_KEY}
       base-url: https://api.perplexity.ai
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers
+
 app:
   min-version: ${APP_MIN_VERSION:1.0.1+36}
   api-football:
