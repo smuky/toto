@@ -10,7 +10,9 @@ public enum SupportedCountriesEnum {
     FRANCE("France"),
     ITALY("Italy"),
     GERMANY("Germany"),
-    PORTUGAL("Portugal");
+    PORTUGAL("Portugal"),
+    BELGIUM("Belgium"),
+    AFRICA("World");
 
     private final String name;
 

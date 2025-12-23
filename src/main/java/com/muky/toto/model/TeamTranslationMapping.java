@@ -67,7 +67,7 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(48, "team.west_ham");
         TEAM_ID_TO_TRANSLATION_KEY.put(44, "team.burnley");
         TEAM_ID_TO_TRANSLATION_KEY.put(39, "team.wolves");
-        
+
         // English Championship teams
         TEAM_ID_TO_TRANSLATION_KEY.put(46, "team.leicester");
         TEAM_ID_TO_TRANSLATION_KEY.put(1359, "team.luton");
@@ -97,6 +97,31 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(64, "team.hull_city");
         TEAM_ID_TO_TRANSLATION_KEY.put(75, "team.stoke_city");
 
+        // English League One teams
+        TEAM_ID_TO_TRANSLATION_KEY.put(37, "team.huddersfield");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1351, "team.portvale");
+        TEAM_ID_TO_TRANSLATION_KEY.put(43, "team.cardiff");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1364, "team.exetercity");
+        TEAM_ID_TO_TRANSLATION_KEY.put(68, "team.bolton");
+        TEAM_ID_TO_TRANSLATION_KEY.put(73, "team.rotherham");
+        TEAM_ID_TO_TRANSLATION_KEY.put(747, "team.barnsley");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1374, "team.mansfieldtown");
+        TEAM_ID_TO_TRANSLATION_KEY.put(748, "team.burtonalbion");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1337, "team.northampton");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1333, "team.afcwimbledon");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1368, "team.stevenage");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1343, "team.bradford");
+        TEAM_ID_TO_TRANSLATION_KEY.put(61, "team.wigan");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1350, "team.peterborough");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1373, "team.leytonorient");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1356, "team.blackpool");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1354, "team.doncaster");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1357, "team.plymouth");
+        TEAM_ID_TO_TRANSLATION_KEY.put(53, "team.reading");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1359, "team.luton");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1358, "team.wycombe");
+        TEAM_ID_TO_TRANSLATION_KEY.put(4686, "team.stockportcounty");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1379, "team.lincoln");
 
         // La Liga teams
         TEAM_ID_TO_TRANSLATION_KEY.put(529, "team.barcelona");
@@ -181,6 +206,50 @@ public class TeamTranslationMapping {
         TEAM_ID_TO_TRANSLATION_KEY.put(108, "team.auxerre");
         TEAM_ID_TO_TRANSLATION_KEY.put(83, "team.nantes");
         TEAM_ID_TO_TRANSLATION_KEY.put(112, "team.metz");
+
+        //Belgium
+        TEAM_ID_TO_TRANSLATION_KEY.put(742, "team.genk");
+        TEAM_ID_TO_TRANSLATION_KEY.put(569, "team.clubbrugge");
+        TEAM_ID_TO_TRANSLATION_KEY.put(741, "team.cerclebrugge");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1393, "team.unionstgilloise");
+        TEAM_ID_TO_TRANSLATION_KEY.put(733, "team.standardliege");
+        TEAM_ID_TO_TRANSLATION_KEY.put(735, "team.sttruiden");
+        TEAM_ID_TO_TRANSLATION_KEY.put(554, "team.anderlecht");
+        TEAM_ID_TO_TRANSLATION_KEY.put(736, "team.charleroi");
+        TEAM_ID_TO_TRANSLATION_KEY.put(740, "team.antwerp");
+        TEAM_ID_TO_TRANSLATION_KEY.put(600, "team.zultewaregem");
+        TEAM_ID_TO_TRANSLATION_KEY.put(5902, "team.raallalouviere");
+        TEAM_ID_TO_TRANSLATION_KEY.put(260, "team.ohleuven");
+        TEAM_ID_TO_TRANSLATION_KEY.put(266, "team.kvmechelen");
+        TEAM_ID_TO_TRANSLATION_KEY.put(6215, "team.dender");
+        TEAM_ID_TO_TRANSLATION_KEY.put(631, "team.gent");
+        TEAM_ID_TO_TRANSLATION_KEY.put(261, "team.kvcwesterlo");
+
+        //Africa
+        TEAM_ID_TO_TRANSLATION_KEY.put(19, "team.nigeria");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1489, "team.tanzania");
+        TEAM_ID_TO_TRANSLATION_KEY.put(28, "team.tunisia");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1519, "team.uganda");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1502, "team.burkinafaso");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1521, "team.equatorialguinea");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1532, "team.algeria");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1510, "team.sudan");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1501, "team.ivorycoast");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1512, "team.mozambique");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1530, "team.cameroon");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1503, "team.gabon");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1529, "team.angola");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1522, "team.zimbabwe");
+        TEAM_ID_TO_TRANSLATION_KEY.put(32, "team.egypt");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1531, "team.southafrica");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1507, "team.zambia");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1524, "team.comoros");
+        TEAM_ID_TO_TRANSLATION_KEY.put(31, "team.morocco");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1500, "team.mali");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1516, "team.benin");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1520, "team.botswana");
+        TEAM_ID_TO_TRANSLATION_KEY.put(13, "team.senegal");
+        TEAM_ID_TO_TRANSLATION_KEY.put(1508, "team.congohr");
     }
     
     /**

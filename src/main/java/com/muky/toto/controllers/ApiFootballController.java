@@ -91,7 +91,7 @@ public class ApiFootballController implements ApiFootballApi {
         }
     }
 
-    private void populateFixtureTeamDisplayNames(List<Fixture> fixtures, String languageCode) {
+    public void populateFixtureTeamDisplayNames(List<Fixture> fixtures, String languageCode) {
         if (fixtures != null) {
             fixtures.forEach(fixture -> {
                 if (fixture.getTeams() != null) {
