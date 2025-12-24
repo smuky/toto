@@ -1,7 +1,7 @@
 package com.muky.toto.controllers;
 
 import com.muky.toto.controllers.requests.FeedbackRequest;
-import com.muky.toto.controllers.response.FeedbackResponse;
+import com.muky.toto.controllers.translation.FeedbackResponse;
 import com.muky.toto.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

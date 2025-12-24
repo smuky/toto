@@ -1,4 +1,4 @@
-package com.muky.toto.controllers.response;
+package com.muky.toto.controllers.translation;
 
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.PredefinedEvent;
@@ -12,6 +12,7 @@ public record TranslationResponse(
         List<PredefinedEvent> predefinedEvents,
         UpgradeMessages upgradeMessages,
         PremiumBadgeMessages premiumBadgeMessages,
+        Days days,
         String selectLeagueMode,
         String recommendedListsMode,
         String selectLeague,

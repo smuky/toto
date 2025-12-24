@@ -1,8 +1,9 @@
 package com.muky.toto.service;
 
-import com.muky.toto.controllers.response.PremiumBadgeMessages;
-import com.muky.toto.controllers.response.TranslationResponse;
-import com.muky.toto.controllers.response.UpgradeMessages;
+import com.muky.toto.controllers.translation.Days;
+import com.muky.toto.controllers.translation.PremiumBadgeMessages;
+import com.muky.toto.controllers.translation.TranslationResponse;
+import com.muky.toto.controllers.translation.UpgradeMessages;
 import com.muky.toto.model.LeagueEnum;
 import com.muky.toto.model.PredefinedEvent;
 import com.muky.toto.model.TeamTranslationMapping;
@@ -89,7 +90,17 @@ public class TranslationService {
                 translate("recommended.lists.premium_badge.button", language),
                 translate("recommended.lists.premium_badge.back", language)
         );
-        
+
+        Days days = new Days(
+                translate("day.monday", language),
+                translate("day.tuesday", language),
+                translate("day.wednesday", language),
+                translate("day.thursday", language),
+                translate("day.friday", language),
+                translate("day.saturday", language),
+                translate("day.sunday", language)
+        );
+
         String selectLeagueMode = translate("select.league.mode", language);
         String recommendedListsMode = translate("recommended.lists.mode", language);
         String selectLeague = translate("select.league", language);
@@ -126,6 +137,7 @@ public class TranslationService {
                 predefinedEvents,
                 upgradeMessages,
                 premiumBadgeMessages,
+                days,
                 selectLeagueMode,
                 recommendedListsMode,
                 selectLeague,

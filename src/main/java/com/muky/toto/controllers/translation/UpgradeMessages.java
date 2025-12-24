@@ -1,4 +1,4 @@
-package com.muky.toto.controllers.response;
+package com.muky.toto.controllers.translation;
 
 public record UpgradeMessages(
         String header,

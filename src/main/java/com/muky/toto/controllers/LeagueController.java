@@ -1,6 +1,6 @@
 package com.muky.toto.controllers;
 
-import com.muky.toto.controllers.response.TranslationResponse;
+import com.muky.toto.controllers.translation.TranslationResponse;
 import com.muky.toto.model.EuropeLeagueType;
 import com.muky.toto.model.IsraelLeagueType;
 import com.muky.toto.model.TeamGamesEntry;
