@@ -58,7 +58,6 @@ public abstract class OpenAiServiceBase implements OpenAiService{
 
         // 4. Call the model with temperature and max tokens
         OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .temperature(0.3)
                 .maxTokens(4000)
                 .build();
 
@@ -112,7 +111,6 @@ public abstract class OpenAiServiceBase implements OpenAiService{
                 language);
 
         OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .temperature(0.3)
                 .maxTokens(4000)
                 .build();
 

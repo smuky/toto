@@ -7,12 +7,21 @@ spring:
       chat:
         options:
           model: gpt-4o
+          temperature: 0.2
 
 custom:
   ai:
     perplexity:
       api-key: test-perplexity-key
       base-url: https://api.perplexity.ai
+      model: sonar
+      temperature: 0.2
+    gemini:
+      api-key: test-gemini-key
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      model: gemini-3-flash-preview
+      temperature: 0.2
+
 
 redis:
   host: localhost

@@ -8,6 +8,7 @@ spring:
       chat:
         options:
           model: gpt-4o
+          temperature: 0.7
   mail:
     host: smtp.gmail.com
     port: 587
@@ -40,6 +41,13 @@ custom:
     perplexity:
       api-key: ${PERPLEXITY_API_KEY}
       base-url: https://api.perplexity.ai
+      model: sonar
+      temperature: 0.5
+    gemini:
+      api-key: ${GEMINI_API_KEY} # Your Google AI Studio key
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      model: gemini-3-flash-preview
+      temperature: 0.2
 
 management:
   endpoints:

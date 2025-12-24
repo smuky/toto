@@ -55,7 +55,9 @@ public class AiConfig {
     @Bean
     public OpenAiChatModel perplexityChatModel(
             @Value("${custom.ai.perplexity.api-key}") String apiKey,
-            @Value("${custom.ai.perplexity.base-url}") String baseUrl) {
+            @Value("${custom.ai.perplexity.base-url}") String baseUrl,
+            @Value("${custom.ai.perplexity.model}") String model,
+            @Value("${custom.ai.perplexity.temperature}") double temperature) {
 
         log.info("Configuring Perplexity with base URL: {}", baseUrl);
         
@@ -94,7 +96,79 @@ public class AiConfig {
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model("sonar")
+                        .model(model)
+                        .temperature(temperature)
+                        .build())
+                .build();
+    }
+
+    @Bean
+    public OpenAiChatModel geminiChatModel(
+            @Value("${custom.ai.gemini.api-key}") String apiKey,
+            @Value("${custom.ai.gemini.base-url}") String baseUrl,
+            @Value("${custom.ai.gemini.model}") String modelName,
+            @Value("${custom.ai.gemini.temperature}") double temperature) {
+
+        log.info("Configuring Gemini (OpenAI Compat) with base URL: {}", baseUrl);
+
+        // Reusing the URL rewriter logic to strip "/v1"
+        ClientHttpRequestInterceptor urlRewriteInterceptor = (request, body, execution) -> {
+            URI originalUri = request.getURI();
+            String originalUrl = originalUri.toString();
+
+            // Google's OpenAI endpoint is .../openai/chat/completions
+            // Spring AI adds .../openai/v1/chat/completions
+            // We must remove the "/v1" part
+            if (originalUrl.contains("/v1/chat/completions")) {
+                String correctedUrl = originalUrl.replace("/v1/chat/completions", "/chat/completions");
+                log.info("Gemini API - Rewriting URL from {} to {}", originalUrl, correctedUrl);
+
+                URI correctedUri = URI.create(correctedUrl);
+                HttpRequest modifiedRequest = new HttpRequestWrapper(request, correctedUri);
+                return execution.execute(modifiedRequest, body);
+            }
+
+            return execution.execute(request, body);
+        };
+
+        RestClient.Builder restClientBuilder = RestClient.builder()
+                .requestInterceptor(urlRewriteInterceptor);
+
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .apiKey(apiKey)
+                .baseUrl(baseUrl)
+                .restClientBuilder(restClientBuilder)
+                .build();
+
+        return OpenAiChatModel.builder()
+                .openAiApi(openAiApi)
+                .defaultOptions(OpenAiChatOptions.builder()
+                        .model(modelName) // e.g., "gemini-1.5-flash"
+                        .temperature(temperature) // Good for prediction consistency
+                        .build())
+                .build();
+    }
+
+    @Bean
+    public OpenAiChatModel gptChatModel(
+            @Value("${spring.ai.openai.api-key}") String apiKey,
+            @Value("${spring.ai.openai.base-url:https://api.openai.com}") String baseUrl,
+            @Value("${spring.ai.openai.chat.options.model:gpt-4o}") String model,
+            @Value("${spring.ai.openai.chat.options.temperature:0.2}") double temperature
+            ) {
+
+        // 1. Create the API Connection
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .apiKey(apiKey)
+                .baseUrl(baseUrl)
+                .build();
+
+        // 2. Create the Chat Model with Options
+        return OpenAiChatModel.builder()
+                .openAiApi(openAiApi)
+                .defaultOptions(OpenAiChatOptions.builder()
+                        .model(model)
+                        .temperature(temperature)
                         .build())
                 .build();
     }
