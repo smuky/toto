@@ -55,6 +55,10 @@ management:
       exposure:
         include: health,info,loggers
 
+firebase:
+  credentials:
+    path: classpath:firebase-service-account.json
+
 app:
   min-version: ${APP_MIN_VERSION:1.0.1+36}
   api-football:
