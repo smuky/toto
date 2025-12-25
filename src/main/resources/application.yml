@@ -1,6 +1,22 @@
 spring:
   application:
     name: toto
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME:your-username}
+    password: ${DATABASE_PASSWORD:your-password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: ${SHOW_SQL:true}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+      jdbc:
+        time_zone: UTC
+    open-in-view: false
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}

@@ -16,9 +16,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
-
-    public static final String REQUEST_ATTRIBUTE_FIREBASE_UID = "firebaseUid";
-
     private final FirebaseAuth firebaseAuth;
 
     public FirebaseAuthenticationFilter(FirebaseAuth firebaseAuth) {
@@ -44,8 +41,6 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
         try {
             FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
             String uid = decodedToken.getUid();
-
-            request.setAttribute(REQUEST_ATTRIBUTE_FIREBASE_UID, uid);
 
             FirebaseAuthenticationToken authentication = new FirebaseAuthenticationToken(
                     uid,

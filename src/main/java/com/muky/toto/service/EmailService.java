@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +22,10 @@ public class EmailService {
     public void sendFeedback(String message, String userEmail, String appVersion, String buildNumber, 
                               String deviceModel, String operatingSystem, String locale, String timezone) {
         try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userId = authentication.getName(); // This is the UID you set in the authentication object
+
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(recipientEmail);
             mailMessage.setSubject("AI Football Predictor - User Feedback");
@@ -37,6 +43,7 @@ public class EmailService {
             } else {
                 emailBody.append("Email: Not provided\n");
             }
+            emailBody.append("User ID: ").append(userId).append("\n");
             
             emailBody.append("\n=== APP INFO ===\n");
             emailBody.append("Version: ").append(appVersion != null ? appVersion : "N/A").append("\n");
