@@ -2,6 +2,7 @@ package com.muky.toto.controllers.translation;
 
 public record LeagueTranslation(
         String name,
-        String country
+        String country,
+        String logo
 ) {
 }

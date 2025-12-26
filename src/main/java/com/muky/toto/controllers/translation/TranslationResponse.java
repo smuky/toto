@@ -14,6 +14,7 @@ public record TranslationResponse(
         PremiumBadgeMessages premiumBadgeMessages,
         Days days,
         SettingsTranslation settingsTranslation,
+        SendFeedbackTranslation sendFeedbackTranslation,
         String selectLeagueMode,
         String recommendedListsMode,
         String selectLeague,

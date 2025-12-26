@@ -3,6 +3,7 @@ package com.muky.toto.service;
 import com.muky.toto.controllers.translation.Days;
 import com.muky.toto.controllers.translation.LeagueTranslation;
 import com.muky.toto.controllers.translation.PremiumBadgeMessages;
+import com.muky.toto.controllers.translation.SendFeedbackTranslation;
 import com.muky.toto.controllers.translation.SettingsTranslation;
 import com.muky.toto.controllers.translation.TranslationResponse;
 import com.muky.toto.controllers.translation.UpgradeMessages;
@@ -79,7 +80,8 @@ public class TranslationService {
                         league -> league,
                         league -> new LeagueTranslation(
                                 getLeagueName(league, language),
-                                getCountryName(league.getCountry(), language)
+                                getCountryName(league.getCountry(), language),
+                                league.getLogoUrl()
                         )
                 ));
 
@@ -130,6 +132,16 @@ public class TranslationService {
                 translate("settings.terms_of_use_privacy_policy", language)
         );
 
+        SendFeedbackTranslation sendFeedbackTranslation = new SendFeedbackTranslation(
+                translate("feedback.title", language),
+                translate("feedback.description", language),
+                translate("feedback.message_label", language),
+                translate("feedback.message_placeholder", language),
+                translate("feedback.email_label", language),
+                translate("feedback.email_placeholder", language),
+                translate("feedback.send_button", language)
+        );
+
         String selectLeagueMode = translate("select.league.mode", language);
         String recommendedListsMode = translate("recommended.lists.mode", language);
         String selectLeague = translate("select.league", language);
@@ -168,6 +180,7 @@ public class TranslationService {
                 premiumBadgeMessages,
                 days,
                 settingsTranslation,
+                sendFeedbackTranslation,
                 selectLeagueMode,
                 recommendedListsMode,
                 selectLeague,

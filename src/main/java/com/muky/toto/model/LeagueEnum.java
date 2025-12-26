@@ -44,4 +44,12 @@ public enum LeagueEnum {
         }
         return null;
     }
+    
+    /**
+     * Returns the logo URL for this league from API-Sports.io
+     * @return The logo URL in the format: https://media.api-sports.io/football/leagues/{leagueId}.png
+     */
+    public String getLogoUrl() {
+        return "https://media.api-sports.io/football/leagues/" + leagueId + ".png";
+    }
 }
