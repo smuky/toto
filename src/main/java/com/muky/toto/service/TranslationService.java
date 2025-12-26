@@ -129,7 +129,15 @@ public class TranslationService {
                 translate("settings.manage_subscription", language),
                 translate("settings.information", language),
                 translate("settings.about", language),
-                translate("settings.terms_of_use_privacy_policy", language)
+                translate("settings.terms_of_use_privacy_policy", language),
+                translate("settings.upgrade_to_pro_for", language),
+                translate("settings.upgrade_to_pro", language),
+                translate("settings.free_plan", language),
+                translate("settings.unlock_all_ai_models", language),
+                translate("settings.exclusive_smart_lists", language),
+                translate("settings.ad_free_experience", language),
+                translate("settings.vip_priority_support", language),
+                translate("settings.restore_purchases", language)
         );
 
         SendFeedbackTranslation sendFeedbackTranslation = new SendFeedbackTranslation(

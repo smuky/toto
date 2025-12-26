@@ -10,6 +10,14 @@ public record SettingsTranslation(
         String manageSubscription,
         String information,
         String about,
-        String termsOfUsePrivacyPolicy
+        String termsOfUsePrivacyPolicy,
+        String upgradeToProFor,
+        String upgradeToPro,
+        String freePlan,
+        String unlockAllAIModels,
+        String exclusiveSmartLists,
+        String adFreeExperience,
+        String vipPrioritySupport,
+        String restorePurchases
 ) {
 }
