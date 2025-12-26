@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public record TranslationResponse(
-        Map<LeagueEnum, String> leagueTranslations,
+        Map<LeagueEnum, LeagueTranslation> leagueTranslations,
         Map<String, String> languageTranslations,
         List<PredefinedEvent> predefinedEvents,
         UpgradeMessages upgradeMessages,

@@ -1,6 +1,7 @@
 package com.muky.toto.service;
 
 import com.muky.toto.controllers.translation.Days;
+import com.muky.toto.controllers.translation.LeagueTranslation;
 import com.muky.toto.controllers.translation.PremiumBadgeMessages;
 import com.muky.toto.controllers.translation.TranslationResponse;
 import com.muky.toto.controllers.translation.UpgradeMessages;
@@ -34,7 +35,18 @@ public class TranslationService {
     }
 
     public String getLeagueName(LeagueEnum league, String language) {
-        return translate(league.getTranslationKey(), language);
+        String translatedName = translate(league.getTranslationKey(), language);
+        return translatedName;
+    }
+    
+    public String getCountryName(String country, String language) {
+        String translationKey = "country." + country.toLowerCase();
+        try {
+            return translate(translationKey, language);
+        } catch (Exception e) {
+            log.warn("Translation not found for country key: {} in language: {}, using original name", translationKey, language);
+            return country;
+        }
     }
     
     /**
@@ -61,10 +73,13 @@ public class TranslationService {
     }
 
     public TranslationResponse getTranslations(String language) {
-        Map<LeagueEnum, String> leagueTranslations = Arrays.stream(LeagueEnum.values())
+        Map<LeagueEnum, LeagueTranslation> leagueTranslations = Arrays.stream(LeagueEnum.values())
                 .collect(Collectors.toMap(
                         league -> league,
-                        league -> getLeagueName(league, language)
+                        league -> new LeagueTranslation(
+                                getLeagueName(league, language),
+                                getCountryName(league.getCountry(), language)
+                        )
                 ));
 
         Map<String, String> languageTranslations = Map.of(
