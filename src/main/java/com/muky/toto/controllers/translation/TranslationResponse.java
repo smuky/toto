@@ -13,6 +13,7 @@ public record TranslationResponse(
         UpgradeMessages upgradeMessages,
         PremiumBadgeMessages premiumBadgeMessages,
         Days days,
+        SettingsTranslation settingsTranslation,
         String selectLeagueMode,
         String recommendedListsMode,
         String selectLeague,
