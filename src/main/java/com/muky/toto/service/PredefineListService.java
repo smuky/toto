@@ -74,7 +74,9 @@ public class PredefineListService {
 
             String error = "";
             List<WinnerGamesRequest.Row> games = gameData.getRows();
-
+            if (games.stream().anyMatch(x -> x.getStatus() == "NOT_YET_DEFINED")) {
+                continue;
+            }
             Map<LeagueEnum, List<Fixture>> fixturesByLeague = getFixturesByLeague(games);
 
             List<String> fixtureIds = new ArrayList<>();

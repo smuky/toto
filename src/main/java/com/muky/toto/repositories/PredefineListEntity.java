@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "predefine_list", 
        uniqueConstraints = @UniqueConstraint(name = "unique_draw_game", columnNames = {"draw_number", "game_type"}))
-public class PredefineListEntity {
+public class PredefineListEntity extends BaseEntity {
 
     @Id
     @Column(name = "draw_id")
@@ -25,20 +25,10 @@ public class PredefineListEntity {
     @Column(name = "game_type", nullable = false)
     private Integer gameType;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private OffsetDateTime createdAt;
-
     @Column(name = "fixture_list", columnDefinition = "TEXT")
     private String fixtureList;
 
     @Column(name = "failed_description", columnDefinition = "TEXT")
     private String failedDescription;
-
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = OffsetDateTime.now();
-        }
-    }
 }
 
