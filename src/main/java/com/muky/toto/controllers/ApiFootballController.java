@@ -47,7 +47,7 @@ public class ApiFootballController implements ApiFootballApi {
         log.info("Getting next {} fixtures for league {} with language: {}", next, leagueEnum.name(), language);
         List<Fixture> fixtures = apiFootballService.getNextFixtures(leagueEnum, next);
 
-        populateFixtureTeamDisplayNames(fixtures, language);
+        apiFootballService.populateFixtureTeamDisplayNames(fixtures, language);
         
         log.info("Retrieved {} fixtures for league {} with language: {}", fixtures.size(), leagueEnum.name(), language);
         return ResponseEntity.ok(fixtures);
@@ -58,7 +58,7 @@ public class ApiFootballController implements ApiFootballApi {
         log.info("Getting predefined event {} with language: {}", eventName, language);
         List<Fixture> fixtures = apiFootballService.getPreDefineEvent(eventName);
 
-        populateFixtureTeamDisplayNames(fixtures, language);
+        apiFootballService.populateFixtureTeamDisplayNames(fixtures, language);
 
         log.info("Retrieved {} fixtures for predefined event {} with language: {}", fixtures.size(), eventName, language);
         return ResponseEntity.ok(fixtures);
@@ -88,36 +88,6 @@ public class ApiFootballController implements ApiFootballApi {
                     }
                 })
             );
-        }
-    }
-
-    public void populateFixtureTeamDisplayNames(List<Fixture> fixtures, String languageCode) {
-        if (fixtures != null) {
-            fixtures.forEach(fixture -> {
-                if (fixture.getTeams() != null) {
-                    Fixture.Team homeTeam = fixture.getTeams().getHome();
-                    if (homeTeam != null) {
-                        String translatedName = translationService.getTeamName(
-                            homeTeam.getId(),
-                            homeTeam.getName(),
-                            languageCode
-                        );
-                        homeTeam.setDisplayName(translatedName);
-                        log.debug("Set displayName for home team ID {}: {}", homeTeam.getId(), translatedName);
-                    }
-
-                    Fixture.Team awayTeam = fixture.getTeams().getAway();
-                    if (awayTeam != null) {
-                        String translatedName = translationService.getTeamName(
-                            awayTeam.getId(),
-                            awayTeam.getName(),
-                            languageCode
-                        );
-                        awayTeam.setDisplayName(translatedName);
-                        log.debug("Set displayName for away team ID {}: {}", awayTeam.getId(), translatedName);
-                    }
-                }
-            });
         }
     }
 }

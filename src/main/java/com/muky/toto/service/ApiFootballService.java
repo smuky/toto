@@ -31,6 +31,7 @@ public class ApiFootballService {
     private final RedisCacheManager redisCacheManager;
     private final ObjectMapperService objectMapperService;
     private final Environment environment;
+    private final TranslationService translationService;
 
     public List<League> getLeagues(SupportedCountriesEnum country) {
         List<League> leagues = null;
@@ -180,6 +181,36 @@ public class ApiFootballService {
         log.info("Predefined event {} fixtures: {}", eventName, jsonNode);
         
         return apiFootballAdapter.parseFixtures(jsonNode, fixtureIds);
+    }
+
+    public void populateFixtureTeamDisplayNames(List<Fixture> fixtures, String languageCode) {
+        if (fixtures != null) {
+            fixtures.forEach(fixture -> {
+                if (fixture.getTeams() != null) {
+                    Fixture.Team homeTeam = fixture.getTeams().getHome();
+                    if (homeTeam != null) {
+                        String translatedName = translationService.getTeamName(
+                                homeTeam.getId(),
+                                homeTeam.getName(),
+                                languageCode
+                        );
+                        homeTeam.setDisplayName(translatedName);
+                        log.debug("Set displayName for home team ID {}: {}", homeTeam.getId(), translatedName);
+                    }
+
+                    Fixture.Team awayTeam = fixture.getTeams().getAway();
+                    if (awayTeam != null) {
+                        String translatedName = translationService.getTeamName(
+                                awayTeam.getId(),
+                                awayTeam.getName(),
+                                languageCode
+                        );
+                        awayTeam.setDisplayName(translatedName);
+                        log.debug("Set displayName for away team ID {}: {}", awayTeam.getId(), translatedName);
+                    }
+                }
+            });
+        }
     }
 
 }
